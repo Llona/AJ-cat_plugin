@@ -7,6 +7,8 @@ import win32file
 import os
 import sys
 import settings
+from settings import TicketEnum
+from settings import RoleEnum
 
 
 class RunTicket(object):
@@ -17,7 +19,8 @@ class RunTicket(object):
         self.fight_y = 831
         self.fight_offset = self.screen_high*self.fight_y+self.fight_x
         self.get_pixel_color_cmd = ''
-        self.fight_color = "78509e"
+        # self.fight_color = "78509e"
+        self.fight_color = "664688"
 
         self.boss_fight_pos = "1586 293"
         self.boss_fight_yes_pos = "1398 600"
@@ -69,11 +72,12 @@ class RunTicket(object):
         self.lmove_right = "395 619 2170 563"
         self.lmove_up = "488 819 870 190"
 
-        self.ticket_type = ''
-
         self.dd_path = ''
         self.xxd_path = ''
         self.adb_path = ''
+
+        self.device_id = ''
+
         self.setup()
 
     def setup(self):
@@ -86,6 +90,16 @@ class RunTicket(object):
             str(self.fight_offset)+" 2>nul | "+self.xxd_path+" -ps"
         # print(self.get_pixel_color_cmd)
         self.create_virtual_disk()
+
+        self.get_device_id()
+
+    def get_device_id(self):
+        res = self.run_wait(self.adb_path + ' devices')
+        res = res.replace('List of devices attached\n', '')
+        res = res.replace('device', '')
+        res = res.strip()
+        self.device_id = res
+        print("Device ID: " + self.device_id)
 
     def create_virtual_disk(self):
         # if len(self.get_ramdrive_by_label()) == 0:
@@ -103,7 +117,6 @@ class RunTicket(object):
             str(e)
 
     def run_ticket(self, ticket_type, ticket_num, role):
-        self.ticket_type = ticket_type
         system(self.adb_path + " wait-for-device")
         run_count = 0
 
@@ -120,7 +133,7 @@ class RunTicket(object):
             # move map to copy
             self.moveto_copy_map(role)
 
-            if ticket_type == "red":
+            if ticket_type == TicketEnum.GREEN:
                 self.touch_pos(self.red_ticket_pos)
             else:
                 self.touch_pos(self.green_ticket_pos)
@@ -143,13 +156,18 @@ class RunTicket(object):
         sleep(0.5)
 
     def run_role_copy(self):
+        print("=====Go to floor 1=====")
         self.run_floor1()
         self.go_floor_2()
+        print("=====Go to floor 2=====")
         self.run_floor2()
         self.go_floor3()
+        print("=====Go to floor 3=====")
         self.run_floor3()
         self.go_floor4()
+        print("=====Go to Boss Room=====")
         self.run_floor4()
+        print("=====Start Boss fighting=====")
         self.boss_fighting()
 
     def boss_fighting(self):
@@ -179,9 +197,9 @@ class RunTicket(object):
         self.touch_pos(self.any_pos)
         sleep(12)
         self.touch_pos(self.any_pos)    # get item
-        sleep(3)
+        sleep(4)
         self.touch_pos(self.any_pos)    # may up sky level
-        sleep(3)
+        sleep(4)
         self.touch_pos(self.any_pos)    # may get white key
         sleep(2)
 
@@ -327,18 +345,18 @@ class RunTicket(object):
 
     def clear_fighting(self):
         self.touch_pos(self.fight_role2_pos)
-        sleep(0.1)
+        sleep(0.2)
         self.touch_pos(self.fight_skill_change)
-        sleep(0.1)
+        sleep(0.2)
         self.touch_pos(self.fight_role5_pos)
-        sleep(0.1)
+        sleep(0.2)
         self.touch_pos(self.attack)
         sleep(8)
         self.touch_pos(self.any_pos)
 
     def is_fighting_state(self):
         self.touch_pos(self.fight_role4_pos)
-        sleep(0.15)
+        sleep(0.2)
         pixel_color = self.get_fighting_pixel_color()
 
         if pixel_color == self.fight_color:
@@ -347,13 +365,15 @@ class RunTicket(object):
             return False
 
     def get_fighting_pixel_color(self):
-        system(self.adb_path + " exec-out screencap > " + settings.SCREEN_DUMP_PATH)
+        system(self.adb_path + " -s " + self.device_id + " exec-out screencap > " + settings.SCREEN_DUMP_PATH)
         pixel_color = self.run_wait(self.get_pixel_color_cmd)
+        # print(pixel_color)
         try:
             # pixel_color = pixel_color[8]+pixel_color[9]+pixel_color[11]+pixel_color[12]+
             # pixel_color[14]+pixel_color[15]
             pixel_color = pixel_color[0:6]
         except Exception as e:
+            sleep(3)
             self.get_fighting_pixel_color()
             str(e)
 
@@ -399,11 +419,10 @@ class RunTicket(object):
         elif swipe_type == "lup":
             run_direction = self.lmove_up
 
-        system("adb shell \"input swipe " + run_direction + " " + str(duration) + "\"")
+        system("adb -s " + self.device_id + " shell \"input swipe " + run_direction + " " + str(duration) + "\"")
 
-    @staticmethod
-    def touch_pos(pos):
-        system("adb shell \"input tap " + pos + "\"")
+    def touch_pos(self, pos):
+        system("adb -s " + self.device_id + " shell \"input tap " + pos + "\"")
 
     @staticmethod
     def run_wait(command):
@@ -424,6 +443,25 @@ class RunTicket(object):
         return ramdisk_drives
 
 
-gogogo = RunTicket()
-gogogo.run_ticket("red", 1, "ami")
-# gogogo.run_ticket("green", 5, "ami")
+def get_ticket_num(ticket_type):
+    try:
+        green_num = int(sys.argv[2])
+        red_num = int(sys.argv[3])
+    except Exception as e:
+        print("Error!! Green and Red ticket number is wrong\n")
+        str(e)
+        raise
+
+    if ticket_type == TicketEnum.GREEN:
+        return green_num
+    else:
+        return red_num
+
+
+if __name__ == '__main__':
+    if sys.argv[1] == RoleEnum.AMI.value:
+        gogogo = RunTicket()
+        gogogo.run_ticket(TicketEnum.RED, get_ticket_num(TicketEnum.RED), "ami")
+        gogogo.run_ticket(TicketEnum.GREEN, get_ticket_num(TicketEnum.GREEN), "ami")
+    else:
+        print('Error!! Your Role: '+sys.argv[1]+' is not support, please check it\n')
