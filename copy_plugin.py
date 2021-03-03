@@ -2,25 +2,23 @@
 
 from time import sleep
 from os import system
+from abc import ABC, abstractmethod
 import win32api
 import win32file
 import os
 import sys
 import settings
 from settings import TicketEnum
-from settings import RoleEnum
 
 
-class RunTicket(object):
+
+class Position(object):
     def __init__(self):
         self.screen_high = 2280
         self.screen_wight = 1080
         self.fight_x = 2039
         self.fight_y = 831
         self.fight_offset = self.screen_high*self.fight_y+self.fight_x
-        self.get_pixel_color_cmd = ''
-        # self.fight_color = "78509e"
-        self.fight_color = "664688"
 
         self.boss_fight_pos = "1586 293"
         self.boss_fight_yes_pos = "1398 600"
@@ -72,15 +70,22 @@ class RunTicket(object):
         self.lmove_right = "395 619 2170 563"
         self.lmove_up = "488 819 870 190"
 
+
+class RunTicket(Position):
+    def __init__(self):
+        super(RunTicket, self).__init__()
+        self.get_pixel_color_cmd = ''
+        self.role_obj = None
+
         self.dd_path = ''
         self.xxd_path = ''
         self.adb_path = ''
 
         self.device_id = ''
 
-        self.setup()
+        # self.setup()
 
-    def setup(self):
+    def setup(self, obj):
         self.dd_path = os.path.join(sys.path[0], 'dd.exe')
         self.xxd_path = os.path.join(sys.path[0], 'xxd.exe')
         self.adb_path = os.path.join(sys.path[0], 'adb.exe')
@@ -89,6 +94,9 @@ class RunTicket(object):
             self.dd_path+" if="+settings.SCREEN_DUMP_PATH + " bs=4 count=1 skip=" + \
             str(self.fight_offset)+" 2>nul | "+self.xxd_path+" -ps"
         # print(self.get_pixel_color_cmd)
+
+        self.role_obj = obj
+
         self.create_virtual_disk()
 
         self.get_device_id()
@@ -116,12 +124,12 @@ class RunTicket(object):
             settings.SCREEN_DUMP_PATH = settings.NO_VD_SCREEN_DUMP_PATH
             str(e)
 
-    def run_ticket(self, ticket_type, ticket_num, role):
+    def run_ticket(self, ticket_type, ticket_num):
         system(self.adb_path + " wait-for-device")
         run_count = 0
 
         while run_count < ticket_num:
-            # self.run_role_copy(role)
+
             # return
             self.goto_dimension_eat()
 
@@ -131,198 +139,22 @@ class RunTicket(object):
             sleep(1)
 
             # move map to copy
-            self.moveto_copy_map(role)
+            moveto_copy_map(self.role_obj)
 
-            if ticket_type == TicketEnum.GREEN:
+            if ticket_type == TicketEnum.RED:
+                print("red ticket")
                 self.touch_pos(self.red_ticket_pos)
             else:
+                print("green ticket")
                 self.touch_pos(self.green_ticket_pos)
+
             sleep(0.5)
             self.touch_pos(self.yes_to_move_pos)
             sleep(2)
-            self.run_role_copy()
+
+            run_role_copy(self.role_obj)
 
             run_count += 1
-
-    def moveto_copy_map(self, role):
-        if role == "ami":
-            self.touch_pos(self.future_pos)
-
-        sleep(0.5)
-        self.swipe("lright", 300)
-        self.swipe("lup", 258)
-        sleep(0.5)
-        self.touch_pos(self.ami_pos)
-        sleep(0.5)
-
-    def run_role_copy(self):
-        print("=====Go to floor 1=====")
-        self.run_floor1()
-        self.go_floor_2()
-        print("=====Go to floor 2=====")
-        self.run_floor2()
-        self.go_floor3()
-        print("=====Go to floor 3=====")
-        self.run_floor3()
-        self.go_floor4()
-        print("=====Go to Boss Room=====")
-        self.run_floor4()
-        print("=====Start Boss fighting=====")
-        self.boss_fighting()
-
-    def boss_fighting(self):
-        # fight 1
-        self.touch_pos(self.fight_role1_pos)
-        sleep(0.1)
-        self.touch_pos(self.fight_skill_2)
-        sleep(0.1)
-        self.touch_pos(self.fight_role2_pos)
-        sleep(0.1)
-        self.touch_pos(self.fight_skill_2)
-        sleep(0.1)
-        self.touch_pos(self.fight_role3_pos)
-        sleep(0.1)
-        self.touch_pos(self.fight_skill_2)
-        sleep(0.1)
-        self.touch_pos(self.fight_role4_pos)
-        sleep(0.1)
-        self.touch_pos(self.fight_skill_2)
-        sleep(0.1)
-        self.touch_pos(self.attack)
-        sleep(3)
-        self.touch_pos(self.any_pos)
-        sleep(10)
-        self.touch_pos(self.attack)
-        sleep(14)
-        self.touch_pos(self.any_pos)
-        sleep(12)
-        self.touch_pos(self.any_pos)    # get item
-        sleep(4)
-        self.touch_pos(self.any_pos)    # may up sky level
-        sleep(4)
-        self.touch_pos(self.any_pos)    # may get white key
-        sleep(2)
-
-    def run_floor4(self):
-        self.swipe("left", 3000)
-        self.touch_pos(self.treasure_chest41_pos)
-        sleep(0.5)
-        self.touch_pos(self.any_pos)
-        sleep(0.2)
-        self.swipe("left", 3000)
-        self.touch_pos(self.boss_fight_pos)
-        sleep(0.5)
-        self.touch_pos(self.boss_fight_yes_pos)
-        sleep(5)
-
-    def run_floor3(self):
-        self.clear_all_fight("right")
-        self.get_treasure_chest_31()
-        self.get_treasure_chest_32()
-        self.get_treasure_chest_33()
-
-    def get_treasure_chest_31(self):
-        self.swipe("right", 6300)
-        self.swipe("left", 3000)
-        self.swipe("down")
-        sleep(0.5)
-        self.swipe("left", 3600)
-        self.swipe("up")
-        sleep(1)
-        self.swipe("right", 800)
-        self.touch_pos(self.treasure_chest31_pos)
-        sleep(0.5)
-        self.touch_pos(self.any_pos)
-        self.swipe("left", 500)
-        self.swipe("down")
-        sleep(0.6)
-
-    def get_treasure_chest_32(self):
-        self.swipe("left", 1500)
-        self.swipe("up")
-        sleep(0.3)
-        self.swipe("left", 2500)
-        self.swipe("down")
-        sleep(0.3)
-        self.swipe("left", 2800)
-        self.touch_pos(self.treasure_chest32_pos)
-        sleep(0.5)
-        self.touch_pos(self.any_pos)
-        sleep(0.2)
-
-    def get_treasure_chest_33(self):
-        self.swipe("right", 600)
-        self.swipe("down")
-        sleep(0.3)
-        self.swipe("right", 3100)
-        self.swipe("up")
-        sleep(1)
-        self.swipe("left", 1200)
-        self.touch_pos(self.treasure_chest33_pos)
-        sleep(0.5)
-        self.touch_pos(self.any_pos)
-        sleep(0.2)
-        self.swipe("right", 1200)
-        self.swipe("down")
-        sleep(0.6)
-
-    def go_floor4(self):
-        self.swipe("right", 8300)
-        self.swipe("up")
-        sleep(2)
-
-    def run_floor2(self):
-        self.clear_all_fight("left")
-        self.get_treasure_chest_21()
-
-    def get_treasure_chest_21(self):
-        self.swipe("right", 6300)
-        self.swipe("left", 2000)
-        self.swipe("up")
-        sleep(0.3)
-        self.swipe("right", 6000)
-        self.swipe("down")
-        sleep(0.3)
-        self.swipe("left", 3000)
-        self.touch_pos(self.treasure_chest21_pos)
-        sleep(0.5)
-        self.touch_pos(self.any_pos)
-        sleep(0.2)
-
-    def go_floor3(self):
-        self.swipe("right", 2600)
-        self.swipe("up")
-        sleep(0.3)
-        self.swipe("right", 3000)
-        self.touch_pos(self.elevator_to_floor_3_pos)
-        sleep(1)
-        self.touch_pos(self.elevator_to_floor_3_yes_pos)
-        sleep(5)
-
-    def run_floor1(self):
-        self.clear_all_fight("right")
-        self.get_treasure_chest_12()
-
-    def get_treasure_chest_12(self):
-        self.swipe("left", 9000)
-        self.swipe("up")
-        sleep(1)
-        self.swipe("left", 1000)
-        self.touch_pos(self.treasure_chest12_pos)
-        sleep(0.5)
-        self.touch_pos(self.any_pos)
-        sleep(0.2)
-        self.swipe("right", 500)
-        self.swipe("down")
-        sleep(1)
-
-    def go_floor_2(self):
-        self.swipe("right", 2500)
-        self.swipe("up")
-        sleep(1)
-        self.swipe("left", 6000)
-        self.swipe("up")
-        sleep(1.5)
 
     def clear_all_fight(self, door_direction):
         current_direction = door_direction
@@ -359,7 +191,7 @@ class RunTicket(object):
         sleep(0.2)
         pixel_color = self.get_fighting_pixel_color()
 
-        if pixel_color == self.fight_color:
+        if pixel_color == settings.FIGHTING_COLOR:
             return True
         else:
             return False
@@ -443,25 +275,20 @@ class RunTicket(object):
         return ramdisk_drives
 
 
-def get_ticket_num(ticket_type):
-    try:
-        green_num = int(sys.argv[2])
-        red_num = int(sys.argv[3])
-    except Exception as e:
-        print("Error!! Green and Red ticket number is wrong\n")
-        str(e)
-        raise
+class RunRoleCopy(ABC):
+    @abstractmethod
+    def moveto_copy_map(self):
+        return
 
-    if ticket_type == TicketEnum.GREEN:
-        return green_num
-    else:
-        return red_num
+    @abstractmethod
+    def run_role_copy(self):
+        return
 
 
-if __name__ == '__main__':
-    if sys.argv[1] == RoleEnum.AMI.value:
-        gogogo = RunTicket()
-        gogogo.run_ticket(TicketEnum.RED, get_ticket_num(TicketEnum.RED), "ami")
-        gogogo.run_ticket(TicketEnum.GREEN, get_ticket_num(TicketEnum.GREEN), "ami")
-    else:
-        print('Error!! Your Role: '+sys.argv[1]+' is not support, please check it\n')
+def moveto_copy_map(obj):
+    obj.moveto_copy_map()
+    # return article_next_page_url
+
+
+def run_role_copy(obj):
+    obj.run_role_copy()

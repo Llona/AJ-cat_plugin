@@ -7,6 +7,7 @@ VIRTUAL_CREATE_CMD = 'imdisk -a -s 64M -m '+VIRTUAL_DISK+' -o rem -p "/fs:ntfs /
 NO_VD_SCREEN_DUMP_PATH = path.join(sys.path[0], 'screen.dump')
 SCREEN_DUMP_PATH = path.join(VIRTUAL_DISK, 'screen.dump')
 
+FIGHTING_COLOR = "664688"
 
 class RoleEnum(enum.Enum):
     AMI = 'ami'
