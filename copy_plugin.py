@@ -3,13 +3,15 @@
 from time import sleep
 from os import system
 from abc import ABC, abstractmethod
-import win32api
-import win32file
 import os
 import sys
 import settings
 from settings import TicketEnum
+import platform
 
+if platform.system() == "Windows":
+    import win32api
+    import win32file
 
 
 class Position(object):
@@ -86,9 +88,14 @@ class RunTicket(Position):
         # self.setup()
 
     def setup(self, obj):
-        self.dd_path = os.path.join(sys.path[0], 'dd.exe')
-        self.xxd_path = os.path.join(sys.path[0], 'xxd.exe')
-        self.adb_path = os.path.join(sys.path[0], 'adb.exe')
+        if platform.system() == "Windows":
+            self.dd_path = os.path.join(sys.path[0], 'dd.exe')
+            self.xxd_path = os.path.join(sys.path[0], 'xxd.exe')
+            self.adb_path = os.path.join(sys.path[0], 'adb.exe')
+        else:
+            self.dd_path = 'dd'
+            self.xxd_path = 'xxd'
+            self.adb_path = 'adb'
 
         self.get_pixel_color_cmd = \
             self.dd_path+" if="+settings.SCREEN_DUMP_PATH + " bs=4 count=1 skip=" + \
@@ -97,7 +104,10 @@ class RunTicket(Position):
 
         self.role_obj = obj
 
-        self.create_virtual_disk()
+        if platform.system() == 'Windows':
+            self.create_virtual_disk_windows()
+        else:
+            self.create_virtual_disk_linux()
 
         self.get_device_id()
 
@@ -109,7 +119,23 @@ class RunTicket(Position):
         self.device_id = res
         print("Device ID: " + self.device_id)
 
-    def create_virtual_disk(self):
+    @staticmethod
+    def create_virtual_disk_linux():
+        if not os.path.exists(settings.VIRTUAL_DISK):
+            os.system('mkdir ' + settings.VIRTUAL_DISK)
+
+        print('create virtual disk '+settings.VIRTUAL_DISK)
+        try:
+            os.system(settings.VIRTUAL_UMOUNT_CMD)
+            os.system(settings.VIRTUAL_MOUNT_CMD)
+            print('create done')
+        except Exception as e:
+            print("can't create virtual disk, please check " + settings.VIRTUAL_DISK +
+                  "use virtual disk can protect your HDD")
+            settings.SCREEN_DUMP_PATH = settings.NO_VD_SCREEN_DUMP_PATH
+            str(e)
+
+    def create_virtual_disk_windows(self):
         # if len(self.get_ramdrive_by_label()) == 0:
         for drive in self.get_ramdrive_by_label():
             if drive == settings.VIRTUAL_DISK:

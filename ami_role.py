@@ -65,9 +65,9 @@ class AmiRoleCopy(RunTicket, RunRoleCopy):
         self.touch_pos(self.any_pos)
         sleep(12)
         self.touch_pos(self.any_pos)    # get item
-        sleep(4)
+        sleep(5)
         self.touch_pos(self.any_pos)    # may up sky level
-        sleep(4)
+        sleep(5)
         self.touch_pos(self.any_pos)    # may get white key
         sleep(2)
 
