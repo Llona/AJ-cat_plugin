@@ -99,7 +99,7 @@ class RunTicket(Position):
 
         self.get_pixel_color_cmd = \
             self.dd_path+" if="+settings.SCREEN_DUMP_PATH + " bs=4 count=1 skip=" + \
-            str(self.fight_offset)+" 2>nul | "+self.xxd_path+" -ps"
+            str(self.fight_offset)+" 2>" + settings.NULL_DEV + " | "+self.xxd_path+" -ps"
         # print(self.get_pixel_color_cmd)
 
         self.role_obj = obj
