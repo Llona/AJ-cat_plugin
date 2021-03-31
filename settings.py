@@ -18,6 +18,8 @@ SCREEN_DUMP_PATH = path.join(VIRTUAL_DISK, 'screen.dump')
 
 FIGHTING_COLOR = "664688"
 
+COPY_FIGHT_TOTAL_COUNT = 5
+
 
 class RoleEnum(enum.Enum):
     AMI = 'ami'

@@ -182,10 +182,20 @@ class RunTicket(Position):
 
             run_count += 1
 
-    def clear_all_fight(self, door_direction):
+    def clear_all_fight(self, door_direction, fight_total_count=settings.COPY_FIGHT_TOTAL_COUNT):
         current_direction = door_direction
+        go_run_fight = False
         count = 0
-        while count < 5:
+
+        if fight_total_count == 0:
+            is_run_copy = False
+        else:
+            is_run_copy = True
+
+        if fight_total_count == 0 or count < fight_total_count:
+            go_run_fight = True
+
+        while go_run_fight:
             if current_direction == "right":
                 self.swipe("left", 3000)
                 current_direction = "left"
@@ -195,13 +205,16 @@ class RunTicket(Position):
 
             if self.is_fighting_state():
                 print("is in fight state")
-                self.clear_fighting()
+                self.clear_fighting(is_run_copy)
                 count += 1
                 print("fight count:" + str(count))
             else:
                 continue
 
-    def clear_fighting(self):
+            if fight_total_count != 0 and count >= fight_total_count:
+                go_run_fight = False
+
+    def clear_fighting(self, is_run_copy=True):
         self.touch_pos(self.fight_role2_pos)
         sleep(0.2)
         self.touch_pos(self.fight_skill_change)
@@ -209,7 +222,10 @@ class RunTicket(Position):
         self.touch_pos(self.fight_role5_pos)
         sleep(0.2)
         self.touch_pos(self.attack)
-        sleep(8)
+        if is_run_copy:
+            sleep(8.5)
+        else:
+            sleep(5)
         self.touch_pos(self.any_pos)
 
     def is_fighting_state(self):
@@ -223,12 +239,11 @@ class RunTicket(Position):
             return False
 
     def get_fighting_pixel_color(self):
+        system('echo "" > ' + settings.SCREEN_DUMP_PATH)
         system(self.adb_path + " -s " + self.device_id + " exec-out screencap > " + settings.SCREEN_DUMP_PATH)
         pixel_color = self.run_wait(self.get_pixel_color_cmd)
         # print(pixel_color)
         try:
-            # pixel_color = pixel_color[8]+pixel_color[9]+pixel_color[11]+pixel_color[12]+
-            # pixel_color[14]+pixel_color[15]
             pixel_color = pixel_color[0:6]
         except Exception as e:
             sleep(3)
