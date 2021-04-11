@@ -2,6 +2,7 @@
 
 from time import sleep
 from os import system
+import subprocess
 from abc import ABC, abstractmethod
 import os
 import sys
@@ -50,6 +51,7 @@ class Position(object):
         self.elevator_to_floor_3_yes_pos = "1398 595"
 
         self.any_pos = "924 668"
+        self.any2_pos = "1294 244"
         self.map_pos = "665 1002"
         self.future_pos = "722 185"
         self.extradimensional_pos = "933 183"
@@ -58,11 +60,15 @@ class Position(object):
         self.food_pos = "896 120"
         self.door_pos = "928 254"
 
+        self.area_pos = "2025 984"
+        self.migunia_area_pos = "789 590"
+
         self.red_ticket_pos = "1779 533"
         self.green_ticket_pos = "1795 378"
         self.yes_to_move_pos = "1393 965"
 
         self.ami_pos = "1129 571"
+        self.lika_pos = "519 441"
 
         self.run_right = "332 831 615 842"
         self.run_left = "622 792 323 837"
@@ -71,12 +77,17 @@ class Position(object):
 
         self.lmove_right = "395 619 2170 563"
         self.lmove_up = "488 819 870 190"
+        self.lmove_left = "2165 567 749 597"
+        self.lmove_down = "1391 333 1429 966"
 
 
 class RunTicket(Position):
-    def __init__(self):
+    def __init__(self, fight_type='joker'):
         super(RunTicket, self).__init__()
+        self.fight_type = fight_type
+
         self.get_pixel_color_cmd = ''
+        self.dump_screen_buffer_cmd = ''
         self.role_obj = None
 
         self.dd_path = ''
@@ -110,6 +121,9 @@ class RunTicket(Position):
             self.create_virtual_disk_linux()
 
         self.get_device_id()
+
+        self.dump_screen_buffer_cmd = \
+            self.adb_path + " -s " + self.device_id + " exec-out screencap > " + settings.SCREEN_DUMP_PATH
 
     def get_device_id(self):
         res = self.run_wait(self.adb_path + ' devices')
@@ -166,6 +180,7 @@ class RunTicket(Position):
 
             # move map to copy
             moveto_copy_map(self.role_obj)
+            # break
 
             if ticket_type == TicketEnum.RED:
                 print("red ticket")
@@ -215,12 +230,17 @@ class RunTicket(Position):
                 go_run_fight = False
 
     def clear_fighting(self, is_run_copy=True):
-        self.touch_pos(self.fight_role2_pos)
-        sleep(0.2)
-        self.touch_pos(self.fight_skill_change)
-        sleep(0.2)
-        self.touch_pos(self.fight_role5_pos)
-        sleep(0.2)
+        if self.fight_type == 'joker':
+            self.touch_pos(self.fight_role2_pos)
+            sleep(0.2)
+            self.touch_pos(self.fight_skill_change)
+            sleep(0.2)
+            self.touch_pos(self.fight_role5_pos)
+            sleep(0.2)
+        else:
+            self.touch_pos(self.any_pos)
+            sleep(0.2)
+
         self.touch_pos(self.attack)
         if is_run_copy:
             sleep(8.5)
@@ -239,11 +259,20 @@ class RunTicket(Position):
             return False
 
     def get_fighting_pixel_color(self):
+        pixel_color = ""
         system('echo "" > ' + settings.SCREEN_DUMP_PATH)
-        system(self.adb_path + " -s " + self.device_id + " exec-out screencap > " + settings.SCREEN_DUMP_PATH)
-        pixel_color = self.run_wait(self.get_pixel_color_cmd)
-        # print(pixel_color)
         try:
+            subprocess.check_output(self.dump_screen_buffer_cmd, shell=True, timeout=10)
+            # system(self.adb_path + " -s " + self.device_id + " exec-out screencap > " + settings.SCREEN_DUMP_PATH)
+        except Exception as e:
+            print("adb timeout, re-get again")
+            subprocess.check_output(self.dump_screen_buffer_cmd, shell=True, timeout=10)
+            str(e)
+
+        try:
+            pixel_color = self.run_wait(self.get_pixel_color_cmd)
+            # print(pixel_color)
+
             pixel_color = pixel_color[0:6]
         except Exception as e:
             sleep(3)
@@ -291,6 +320,10 @@ class RunTicket(Position):
             run_direction = self.lmove_right
         elif swipe_type == "lup":
             run_direction = self.lmove_up
+        elif swipe_type == "lleft":
+            run_direction = self.lmove_left
+        elif swipe_type == "ldown":
+            run_direction = self.lmove_down
 
         system("adb -s " + self.device_id + " shell \"input swipe " + run_direction + " " + str(duration) + "\"")
 

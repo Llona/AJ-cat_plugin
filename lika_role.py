@@ -4,9 +4,9 @@ from copy_plugin import RunTicket
 from copy_plugin import RunRoleCopy
 
 
-class AmiRoleCopy(RunTicket, RunRoleCopy):
+class LikaRoleCopy(RunTicket, RunRoleCopy):
     def __init__(self):
-        super(AmiRoleCopy, self).__init__()
+        super(LikaRoleCopy, self).__init__()
         article_obj = self
         self.setup(article_obj)
 
@@ -15,15 +15,12 @@ class AmiRoleCopy(RunTicket, RunRoleCopy):
 
     def moveto_copy_map(self):
         self.touch_pos(self.future_pos)
+
         sleep(0.5)
-        self.touch_pos(self.area_pos)
+        self.swipe("lleft", 300)
+        self.swipe("ldown", 258)
         sleep(0.5)
-        self.touch_pos(self.migunia_area_pos)
-        sleep(0.5)
-        self.swipe("lright", 300)
-        self.swipe("lup", 258)
-        sleep(0.3)
-        self.touch_pos(self.ami_pos)
+        self.touch_pos(self.lika_pos)
         sleep(0.5)
 
     def run_role_copy(self):
