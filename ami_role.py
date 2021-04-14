@@ -8,6 +8,14 @@ class AmiRoleCopy(RunTicket, RunRoleCopy):
     def __init__(self):
         super(AmiRoleCopy, self).__init__()
         article_obj = self
+
+        self.treasure_chest12_pos = "703 386"
+        self.treasure_chest21_pos = "1216 393"
+        self.treasure_chest31_pos = "1565 310"
+        self.treasure_chest32_pos = "1141 412"
+        self.treasure_chest33_pos = "1201 419"
+        self.treasure_chest41_pos = "1484 309"
+
         self.setup(article_obj)
 
     def start(self, ticket_type, ticket_num):

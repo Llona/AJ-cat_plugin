@@ -1,6 +1,7 @@
 from settings import RoleEnum
 from ami_role import AmiRoleCopy
 from lika_role import LikaRoleCopy
+from alder_role import AlderRoleCopy
 from settings import TicketEnum
 import sys
 
@@ -25,6 +26,8 @@ if __name__ == '__main__':
         role_run = AmiRoleCopy()
     elif sys.argv[1] == RoleEnum.LIKA.value:
         role_run = LikaRoleCopy()
+    elif sys.argv[1] == RoleEnum.ALDER.value:
+        role_run = AlderRoleCopy()
     else:
         print('Error!! Your Role: '+sys.argv[1]+' is not support, please check it\n')
         raise ValueError("Error!")

@@ -40,12 +40,13 @@ class Position(object):
         self.fight_skill_change = "2039 831"
         self.attack = "1995 936"
 
-        self.treasure_chest12_pos = "703 386"
-        self.treasure_chest21_pos = "1216 393"
-        self.treasure_chest31_pos = "1565 310"
-        self.treasure_chest32_pos = "1141 412"
-        self.treasure_chest33_pos = "1201 419"
-        self.treasure_chest41_pos = "1484 309"
+        self.copy_menu_btn = "369 965"
+        self.copy_food_btn = "1103 905"
+        self.copy_team_btn = "930 907"
+        self.copy_team_list_4 = "1288 569"
+        self.copy_team_list_5 = "1639 551"
+        self.copy_team_list_close = "2116 36"
+        self.copy_eat_food_yes_ben = "1370 637"
 
         self.elevator_to_floor_3_pos = "1013 326"
         self.elevator_to_floor_3_yes_pos = "1398 595"
@@ -53,22 +54,24 @@ class Position(object):
         self.any_pos = "924 668"
         self.any2_pos = "1294 244"
         self.map_pos = "665 1002"
-        self.future_pos = "722 185"
         self.extradimensional_pos = "933 183"
         self.dimension_pos = "1161 600"
         self.yes_pos = "1425 641"
         self.food_pos = "896 120"
         self.door_pos = "928 254"
 
+        self.future_pos = "722 185"
+        self.modern_pos = "540 201"
         self.area_pos = "2025 984"
         self.migunia_area_pos = "789 590"
+
+        self.ami_pos = "1129 571"
+        self.lika_pos = "519 441"
+        self.alder_pos = "2185 1043"
 
         self.red_ticket_pos = "1779 533"
         self.green_ticket_pos = "1795 378"
         self.yes_to_move_pos = "1393 965"
-
-        self.ami_pos = "1129 571"
-        self.lika_pos = "519 441"
 
         self.run_right = "332 831 615 842"
         self.run_left = "622 792 323 837"
@@ -166,9 +169,9 @@ class RunTicket(Position):
 
     def run_ticket(self, ticket_type, ticket_num):
         system(self.adb_path + " wait-for-device")
-        run_count = 0
+        run_count = 1
 
-        while run_count < ticket_num:
+        while run_count <= ticket_num:
 
             # return
             self.goto_dimension_eat()
@@ -183,10 +186,10 @@ class RunTicket(Position):
             # break
 
             if ticket_type == TicketEnum.RED:
-                print("red ticket")
+                print("red ticket, count:" + str(run_count))
                 self.touch_pos(self.red_ticket_pos)
             else:
-                print("green ticket")
+                print("green ticket, count:" + str(run_count))
                 self.touch_pos(self.green_ticket_pos)
 
             sleep(0.5)
@@ -232,14 +235,14 @@ class RunTicket(Position):
     def clear_fighting(self, is_run_copy=True):
         if self.fight_type == 'joker':
             self.touch_pos(self.fight_role2_pos)
-            sleep(0.2)
+            sleep(0.3)
             self.touch_pos(self.fight_skill_change)
-            sleep(0.2)
+            sleep(0.3)
             self.touch_pos(self.fight_role5_pos)
-            sleep(0.2)
+            sleep(0.3)
         else:
             self.touch_pos(self.any_pos)
-            sleep(0.2)
+            sleep(0.3)
 
         self.touch_pos(self.attack)
         if is_run_copy:
@@ -247,6 +250,7 @@ class RunTicket(Position):
         else:
             sleep(5)
         self.touch_pos(self.any_pos)
+        sleep(0.3)
 
     def is_fighting_state(self):
         self.touch_pos(self.fight_role4_pos)
@@ -304,6 +308,10 @@ class RunTicket(Position):
         sleep(2)
         self.touch_pos(self.any_pos)
         sleep(1)
+        self.touch_pos(self.any_pos)
+        sleep(0.5)
+        self.touch_pos(self.any_pos)
+        sleep(0.5)
 
     def swipe(self, swipe_type, duration=70):
         run_direction = "left"
@@ -329,6 +337,10 @@ class RunTicket(Position):
 
     def touch_pos(self, pos):
         system("adb -s " + self.device_id + " shell \"input tap " + pos + "\"")
+
+    def swipe_by_position(self, start_pos, end_pos, duration=300):
+        run_direction = str(start_pos) + " " + str(end_pos)
+        system("adb -s " + self.device_id + " shell \"input swipe " + run_direction + " " + str(duration) + "\"")
 
     @staticmethod
     def run_wait(command):

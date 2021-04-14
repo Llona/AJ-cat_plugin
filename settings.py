@@ -24,6 +24,7 @@ COPY_FIGHT_TOTAL_COUNT = 5
 class RoleEnum(enum.Enum):
     AMI = 'ami'
     LIKA = 'lika'
+    ALDER = 'alder'
 
 
 class TicketEnum(enum.Enum):
