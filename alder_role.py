@@ -23,7 +23,6 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.run_ticket(ticket_type, ticket_num)
 
     def moveto_copy_map(self):
-        print("into move to copy map")
         self.touch_pos(self.future_pos)
         sleep(0.5)
         self.touch_pos(self.modern_pos)
@@ -60,15 +59,15 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         else:
             sleep(5)
         self.touch_pos(self.any_pos)
-        sleep(0.3)
+        sleep(0.5)
 
     def run_role_copy(self):
-        # print("=====Go to floor 1=====")
-        # self.run_floor1()
-        # self.go_floor_2()
-        # print("=====Go to floor 2=====")
-        # self.run_floor2()
-        # self.go_floor3()
+        print("=====Go to floor 1=====")
+        self.run_floor1()
+        self.go_floor_2()
+        print("=====Go to floor 2=====")
+        self.run_floor2()
+        self.go_floor3()
         print("=====Go to floor 3=====")
         self.run_floor3()
         self.go_floor4()
@@ -193,9 +192,9 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         sleep(3)
 
         while not self.is_fighting_state():
-            print("not in fighting")
+            print("sleep 3 sec for waiting fear fighting")
             sleep(3)
-        print("in fighting")
+        print("start fear fighting")
 
     def clear_fighting_by_yukino(self):
         self.touch_pos(self.fight_role1_pos)
@@ -224,7 +223,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         sleep(0.2)
         self.touch_pos(self.fight_role2_pos)
         sleep(0.2)
-        self.touch_pos(self.fight_skill_4)  # 守護方鎮
+        self.touch_pos(self.fight_skill_4)  # 守護方陣
         sleep(0.2)
         self.touch_pos(self.fight_role3_pos)
         sleep(0.2)
@@ -266,6 +265,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         sleep(3)
 
     def run_floor1(self):
+        sleep(3)
         self.change_member_4_and_5()
         self.clear_all_fight("right")
         self.get_treasure_chest_11()
