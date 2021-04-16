@@ -313,6 +313,19 @@ class RunTicket(Position):
         self.touch_pos(self.any_pos)
         sleep(0.5)
 
+    def eat_food_in_copy(self):
+        # eat food
+        self.touch_pos(self.copy_menu_btn)
+        sleep(0.2)
+        self.touch_pos(self.copy_food_btn)
+        sleep(0.5)
+        self.touch_pos(self.copy_eat_food_yes_ben)
+        sleep(0.3)
+        self.touch_pos(self.any_pos)
+        sleep(0.5)
+        self.touch_pos(self.any_pos)
+        sleep(0.3)
+
     def swipe(self, swipe_type, duration=70):
         run_direction = "left"
 

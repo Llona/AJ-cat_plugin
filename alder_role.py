@@ -41,17 +41,17 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
     def clear_fighting(self, is_run_copy=True):
         # change role to add mp
         self.touch_pos(self.fight_role2_pos)
-        sleep(0.2)
+        sleep(0.1)
         self.touch_pos(self.fight_skill_change)
-        sleep(0.2)
+        sleep(0.1)
         self.touch_pos(self.fight_role5_pos)
-        sleep(0.2)
+        sleep(0.1)
 
         # role 1 use first skill can finish fighting
         self.touch_pos(self.fight_role1_pos)
-        sleep(0.2)
+        sleep(0.1)
         self.touch_pos(self.fight_skill_2)
-        sleep(0.2)
+        sleep(0.1)
 
         self.touch_pos(self.attack)
         if is_run_copy:
@@ -97,18 +97,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
 
         # change 雪乃 for boss fighting
         self.change_member_4_and_5()
-
-        # eat food
-        self.touch_pos(self.copy_menu_btn)
-        sleep(0.2)
-        self.touch_pos(self.copy_food_btn)
-        sleep(0.5)
-        self.touch_pos(self.copy_eat_food_yes_ben)
-        sleep(0.3)
-        self.touch_pos(self.any_pos)
-        sleep(0.2)
-        self.touch_pos(self.any_pos)
-        sleep(0.2)
+        self.eat_food_in_copy()
 
         # go to boss room
         self.swipe("left", 4000)
