@@ -1,6 +1,6 @@
 @echo off
-set /a x=2039
-set /a y=831
+set /a x=2020
+set /a y=1010
 set /a high=2280
 set /a wight=1080
 
@@ -11,8 +11,8 @@ rem echo %offset%
 
 adb exec-out screencap > screen.dump
 
-for /f "usebackq tokens=*" %%i in (`"dd if=screen.dump bs=4 count=1 skip=%offset% 2>nul | xxd -C"`) do set result=%%i
-rem echo %result%
+for /f "usebackq tokens=*" %%i in (`"dd if=screen.dump bs=4 count=1 skip=%offset% 2>nul | xxd -ps"`) do set result=%%i
+echo %result%
 set color=%result:~8,2%%result:~11,2%%result:~14,2%
 echo %color%
 

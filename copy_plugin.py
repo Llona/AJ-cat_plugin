@@ -19,8 +19,10 @@ class Position(object):
     def __init__(self):
         self.screen_high = 2280
         self.screen_wight = 1080
-        self.fight_x = 2039
-        self.fight_y = 831
+        # self.fight_x = 2039
+        # self.fight_y = 831
+        self.fight_x = 614
+        self.fight_y = 833
         self.fight_offset = self.screen_high*self.fight_y+self.fight_x
 
         self.boss_fight_pos = "1586 293"
@@ -37,7 +39,8 @@ class Position(object):
         self.fight_skill_2 = "830 822"
         self.fight_skill_3 = "1194 822"
         self.fight_skill_4 = "1556 819"
-        self.fight_skill_change = "2039 831"
+
+        self.fight_skill_change = "1954 992"
         self.attack = "1995 936"
 
         self.copy_menu_btn = "369 965"
@@ -197,6 +200,7 @@ class RunTicket(Position):
             sleep(2)
 
             run_role_copy(self.role_obj)
+            print("=====Done=====")
 
             run_count += 1
 
@@ -235,14 +239,14 @@ class RunTicket(Position):
     def clear_fighting(self, is_run_copy=True):
         if self.fight_type == 'joker':
             self.touch_pos(self.fight_role2_pos)
-            sleep(0.3)
+            # sleep(0.1)
             self.touch_pos(self.fight_skill_change)
-            sleep(0.3)
+            # sleep(0.1)
             self.touch_pos(self.fight_role5_pos)
-            sleep(0.3)
+            # sleep(0.1)
         else:
             self.touch_pos(self.any_pos)
-            sleep(0.3)
+            # sleep(0.1)
 
         self.touch_pos(self.attack)
         if is_run_copy:
@@ -266,22 +270,34 @@ class RunTicket(Position):
         pixel_color = ""
         system('echo "" > ' + settings.SCREEN_DUMP_PATH)
         try:
-            subprocess.check_output(self.dump_screen_buffer_cmd, shell=True, timeout=10)
+            subprocess.run(self.dump_screen_buffer_cmd, shell=True, timeout=10)
             # system(self.adb_path + " -s " + self.device_id + " exec-out screencap > " + settings.SCREEN_DUMP_PATH)
-        except Exception as e:
-            print("adb timeout, re-get again")
-            subprocess.check_output(self.dump_screen_buffer_cmd, shell=True, timeout=10)
-            str(e)
-
-        try:
             pixel_color = self.run_wait(self.get_pixel_color_cmd)
-            # print(pixel_color)
-
             pixel_color = pixel_color[0:6]
+            # print(pixel_color)
         except Exception as e:
             sleep(3)
+            print("adb timeout, re-get again")
             self.get_fighting_pixel_color()
             str(e)
+        # try:
+        #     subprocess.check_output(self.dump_screen_buffer_cmd, shell=True, timeout=10)
+        #     # system(self.adb_path + " -s " + self.device_id + " exec-out screencap > " + settings.SCREEN_DUMP_PATH)
+        # except Exception as e:
+        #     print("adb timeout, re-get again")
+        #     subprocess.check_output(self.dump_screen_buffer_cmd, shell=True, timeout=10)
+        #     str(e)
+        #
+        # try:
+        #     pixel_color = self.run_wait(self.get_pixel_color_cmd)
+        #     # print(pixel_color)
+        #
+        #     pixel_color = pixel_color[0:6]
+        # except Exception as e:
+        #     sleep(3)
+        #     print("adb timeout, re-get again")
+        #     self.get_fighting_pixel_color()
+        #     str(e)
 
         # print(pixel_color)
         return pixel_color

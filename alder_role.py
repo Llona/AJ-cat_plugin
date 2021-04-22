@@ -32,8 +32,11 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.touch_pos(self.migunia_area_pos)
         sleep(0.5)
         self.swipe("lright", 300)
+        self.swipe("lright", 300)
         self.swipe("ldown", 258)
         self.swipe("lright", 300)
+        self.swipe("ldown", 258)
+        # self.swipe("lright", 300)
         sleep(0.3)
         self.touch_pos(self.alder_pos)
         sleep(0.5)
@@ -41,17 +44,12 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
     def clear_fighting(self, is_run_copy=True):
         # change role to add mp
         self.touch_pos(self.fight_role2_pos)
-        sleep(0.1)
         self.touch_pos(self.fight_skill_change)
-        sleep(0.1)
         self.touch_pos(self.fight_role5_pos)
-        sleep(0.1)
 
         # role 1 use first skill can finish fighting
         self.touch_pos(self.fight_role1_pos)
-        sleep(0.1)
         self.touch_pos(self.fight_skill_2)
-        sleep(0.1)
 
         self.touch_pos(self.attack)
         if is_run_copy:
@@ -80,7 +78,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.clear_fighting_by_yukino()
         sleep(6)
         self.touch_pos(self.any_pos)
-        sleep(12)
+        sleep(10)
         self.touch_pos(self.any_pos)    # get item
         sleep(5)
         self.touch_pos(self.any_pos)    # may up sky level
@@ -101,9 +99,8 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
 
         # go to boss room
         self.swipe("left", 4000)
-        sleep(1)
         self.touch_pos(self.boss_fight_yes_pos)
-        sleep(5)
+        sleep(4)
 
     def run_floor3(self):
         self.clear_all_fight("right")
@@ -187,41 +184,25 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
 
     def clear_fighting_by_yukino(self):
         self.touch_pos(self.fight_role1_pos)
-        sleep(0.2)
         self.touch_pos(self.fight_skill_3)  # 蝴蝶一夢
-        sleep(0.2)
         self.touch_pos(self.fight_role2_pos)
-        sleep(0.2)
         self.touch_pos(self.fight_skill_2)  # 風塵狼破
-        sleep(0.2)
         self.touch_pos(self.fight_role3_pos)
-        sleep(0.2)
         self.touch_pos(self.fight_skill_3)  # 克加
-        sleep(0.2)
         self.touch_pos(self.fight_role4_pos)
-        sleep(0.2)
         self.touch_pos(self.fight_skill_3)  # 流星
-        sleep(0.2)
 
         self.touch_pos(self.attack)
         sleep(9)
 
         self.touch_pos(self.fight_role1_pos)
-        sleep(0.2)
         self.touch_pos(self.fight_skill_4)  # 神速的旋律
-        sleep(0.2)
         self.touch_pos(self.fight_role2_pos)
-        sleep(0.2)
         self.touch_pos(self.fight_skill_4)  # 守護方陣
-        sleep(0.2)
         self.touch_pos(self.fight_role3_pos)
-        sleep(0.2)
         self.touch_pos(self.fight_skill_4)  # 無畏舞步
-        sleep(0.2)
         self.touch_pos(self.fight_role4_pos)
-        sleep(0.2)
         self.touch_pos(self.fight_skill_2)  # 飛雪千里
-        sleep(0.2)
 
         self.touch_pos(self.attack)
         sleep(8)

@@ -16,7 +16,8 @@ else:
 NO_VD_SCREEN_DUMP_PATH = path.join(sys.path[0], 'screen.dump')
 SCREEN_DUMP_PATH = path.join(VIRTUAL_DISK, 'screen.dump')
 
-FIGHTING_COLOR = "664688"
+# FIGHTING_COLOR = "664688"
+FIGHTING_COLOR = "528cca"
 
 COPY_FIGHT_TOTAL_COUNT = 5
 
