@@ -175,7 +175,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         sleep(0.7)
         self.swipe("left", 2500)
         self.swipe("up")
-        sleep(3)
+        sleep(5)
 
         while not self.is_fighting_state():
             print("sleep 3 sec for waiting fear fighting")
@@ -184,7 +184,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
 
     def clear_fighting_by_yukino(self):
         self.touch_pos(self.fight_role1_pos)
-        self.touch_pos(self.fight_skill_3)  # 蝴蝶一夢
+        self.touch_pos(self.fight_skill_2)  # 蝴蝶一夢
         self.touch_pos(self.fight_role2_pos)
         self.touch_pos(self.fight_skill_2)  # 風塵狼破
         self.touch_pos(self.fight_role3_pos)

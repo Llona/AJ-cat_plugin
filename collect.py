@@ -4,6 +4,7 @@ from copy_plugin import RunTicket
 if __name__ == '__main__':
     if sys.argv[1] != 'right' and sys.argv[1] != 'left':
         print('parameter is wrong! please input right or left')
+        raise ValueError("Error!")
     if len(sys.argv) >= 3:
         run_collect = RunTicket(sys.argv[2])
     else:

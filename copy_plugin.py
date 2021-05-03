@@ -92,9 +92,12 @@ class RunTicket(Position):
         super(RunTicket, self).__init__()
         self.fight_type = fight_type
 
-        self.get_pixel_color_cmd = ''
+        # self.get_pixel_color_cmd = ''
         self.dump_screen_buffer_cmd = ''
         self.role_obj = None
+
+        self.dump_screen_fail_count = 0
+        self.dump_screen_path = settings.SCREEN_DUMP_PATH
 
         self.dd_path = ''
         self.xxd_path = ''
@@ -114,9 +117,9 @@ class RunTicket(Position):
             self.xxd_path = 'xxd'
             self.adb_path = 'adb'
 
-        self.get_pixel_color_cmd = \
-            self.dd_path+" if="+settings.SCREEN_DUMP_PATH + " bs=4 count=1 skip=" + \
-            str(self.fight_offset)+" 2>" + settings.NULL_DEV + " | "+self.xxd_path+" -ps"
+        # self.get_pixel_color_cmd = \
+        #     self.dd_path+" if="+self.dump_screen_path + " bs=4 count=1 skip=" + \
+        #     str(self.fight_offset)+" 2>" + settings.NULL_DEV + " | "+self.xxd_path+" -ps"
         # print(self.get_pixel_color_cmd)
 
         self.role_obj = obj
@@ -127,20 +130,28 @@ class RunTicket(Position):
             self.create_virtual_disk_linux()
 
         self.get_device_id()
+        self.set_dump_screen_cmd(self.dump_screen_path)
 
-        self.dump_screen_buffer_cmd = \
-            self.adb_path + " -s " + self.device_id + " exec-out screencap > " + settings.SCREEN_DUMP_PATH
-
-    def get_device_id(self):
-        res = self.run_wait(self.adb_path + ' devices')
-        res = res.replace('List of devices attached\n', '')
-        res = res.replace('device', '')
-        res = res.strip()
-        self.device_id = res
+    def get_device_id(self, specified_id=settings.DEVICE_ID):
+        if not specified_id:
+            res = self.run_wait(self.adb_path + ' devices')
+            res = res.replace('List of devices attached\n', '')
+            res = res.replace('device', '')
+            res = res.strip()
+            self.device_id = res
+        else:
+            self.device_id = specified_id
         print("Device ID: " + self.device_id)
 
-    @staticmethod
-    def create_virtual_disk_linux():
+    def set_dump_screen_cmd(self, dump_file_name):
+        self.dump_screen_buffer_cmd = \
+            self.adb_path + " -s " + self.device_id + " exec-out screencap > " + dump_file_name
+
+    def get_pixel_color_cmd(self):
+        return self.dd_path+" if="+self.dump_screen_path + " bs=4 count=1 skip=" + \
+               str(self.fight_offset)+" 2>" + settings.NULL_DEV + " | "+self.xxd_path+" -ps"
+
+    def create_virtual_disk_linux(self):
         if not os.path.exists(settings.VIRTUAL_DISK):
             os.system('mkdir ' + settings.VIRTUAL_DISK)
 
@@ -152,7 +163,7 @@ class RunTicket(Position):
         except Exception as e:
             print("can't create virtual disk, please check " + settings.VIRTUAL_DISK +
                   "use virtual disk can protect your HDD")
-            settings.SCREEN_DUMP_PATH = settings.NO_VD_SCREEN_DUMP_PATH
+            self.dump_screen_path = settings.NO_VD_SCREEN_DUMP_PATH
             str(e)
 
     def create_virtual_disk_windows(self):
@@ -167,7 +178,7 @@ class RunTicket(Position):
         except Exception as e:
             print("can't create virtual disk, please make sure install IMdisk, "
                   "use virtual disk can protect your HDD")
-            settings.SCREEN_DUMP_PATH = settings.NO_VD_SCREEN_DUMP_PATH
+            self.dump_screen_path = settings.NO_VD_SCREEN_DUMP_PATH
             str(e)
 
     def run_ticket(self, ticket_type, ticket_num):
@@ -239,14 +250,10 @@ class RunTicket(Position):
     def clear_fighting(self, is_run_copy=True):
         if self.fight_type == 'joker':
             self.touch_pos(self.fight_role2_pos)
-            # sleep(0.1)
             self.touch_pos(self.fight_skill_change)
-            # sleep(0.1)
             self.touch_pos(self.fight_role5_pos)
-            # sleep(0.1)
         else:
             self.touch_pos(self.any_pos)
-            # sleep(0.1)
 
         self.touch_pos(self.attack)
         if is_run_copy:
@@ -268,38 +275,27 @@ class RunTicket(Position):
 
     def get_fighting_pixel_color(self):
         pixel_color = ""
-        system('echo "" > ' + settings.SCREEN_DUMP_PATH)
+        system('echo "" > ' + self.dump_screen_path)
+
+        p = subprocess.Popen(self.dump_screen_buffer_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         try:
-            subprocess.run(self.dump_screen_buffer_cmd, shell=True, timeout=10)
+            p.communicate(timeout=10)
             # system(self.adb_path + " -s " + self.device_id + " exec-out screencap > " + settings.SCREEN_DUMP_PATH)
-            pixel_color = self.run_wait(self.get_pixel_color_cmd)
+            pixel_color = self.run_wait(self.get_pixel_color_cmd())
             pixel_color = pixel_color[0:6]
             # print(pixel_color)
         except Exception as e:
-            sleep(3)
             print("adb timeout, re-get again")
+            self.dump_screen_fail_count += 1
+            self.dump_screen_path = self.dump_screen_path + str(self.dump_screen_fail_count)
+
+            p.terminate()
+            print("change dump path: " + self.dump_screen_path)
+            self.set_dump_screen_cmd(self.dump_screen_path)
+            sleep(5)
             self.get_fighting_pixel_color()
             str(e)
-        # try:
-        #     subprocess.check_output(self.dump_screen_buffer_cmd, shell=True, timeout=10)
-        #     # system(self.adb_path + " -s " + self.device_id + " exec-out screencap > " + settings.SCREEN_DUMP_PATH)
-        # except Exception as e:
-        #     print("adb timeout, re-get again")
-        #     subprocess.check_output(self.dump_screen_buffer_cmd, shell=True, timeout=10)
-        #     str(e)
-        #
-        # try:
-        #     pixel_color = self.run_wait(self.get_pixel_color_cmd)
-        #     # print(pixel_color)
-        #
-        #     pixel_color = pixel_color[0:6]
-        # except Exception as e:
-        #     sleep(3)
-        #     print("adb timeout, re-get again")
-        #     self.get_fighting_pixel_color()
-        #     str(e)
 
-        # print(pixel_color)
         return pixel_color
 
     def goto_dimension_eat(self):
