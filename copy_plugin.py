@@ -287,7 +287,10 @@ class RunTicket(Position):
         except Exception as e:
             print("adb timeout, re-get again")
             self.dump_screen_fail_count += 1
-            self.dump_screen_path = self.dump_screen_path + str(self.dump_screen_fail_count)
+            if self.dump_screen_fail_count <= 1:
+                self.dump_screen_path = self.dump_screen_path + str(self.dump_screen_fail_count)
+            else:
+                self.dump_screen_path = self.dump_screen_path[0:-1] + str(self.dump_screen_fail_count)
 
             p.terminate()
             print("change dump path: " + self.dump_screen_path)
