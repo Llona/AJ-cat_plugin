@@ -92,11 +92,11 @@ class RunTicket(Position):
         super(RunTicket, self).__init__()
         self.fight_type = fight_type
 
-        self.dump_screen_buffer_cmd = ''
+        # self.dump_screen_buffer_cmd = ''
         self.role_obj = None
 
         self.use_virtual_disk = False
-        self.dump_screen_fail_count = 0
+        # self.dump_screen_fail_count = 0
         self.dump_screen_path = settings.SCREEN_DUMP_PATH
 
         self.dd_path = ''
@@ -119,15 +119,15 @@ class RunTicket(Position):
 
         self.role_obj = obj
 
-        if platform.system() == 'Windows':
-            self.use_virtual_disk = self.create_virtual_disk_windows()
-        else:
-            self.use_virtual_disk = self.create_virtual_disk_linux()
-
-        self.clear_virtual_disk_file()
+        # if platform.system() == 'Windows':
+        #     self.use_virtual_disk = self.create_virtual_disk_windows()
+        # else:
+        #     self.use_virtual_disk = self.create_virtual_disk_linux()
+        #
+        # self.clear_virtual_disk_file()
 
         self.get_device_id()
-        self.set_dump_screen_cmd(self.dump_screen_path)
+        # self.set_dump_screen_cmd(self.dump_screen_path)
 
     def get_device_id(self, specified_id=settings.DEVICE_ID):
         if not specified_id:
@@ -140,13 +140,16 @@ class RunTicket(Position):
             self.device_id = specified_id
         print("Device ID: " + self.device_id)
 
-    def set_dump_screen_cmd(self, dump_file_name):
-        self.dump_screen_buffer_cmd = \
-            self.adb_path + " -s " + self.device_id + " exec-out screencap > " + dump_file_name
+    # def set_dump_screen_cmd(self, dump_file_name):
+    #     self.dump_screen_buffer_cmd = \
+    #         self.adb_path + " -s " + self.device_id + " exec-out screencap > " + dump_file_name
 
     def get_pixel_color_cmd(self):
-        return self.dd_path+" if="+self.dump_screen_path + " bs=4 count=1 skip=" + \
-               str(self.fight_offset)+" 2>" + settings.NULL_DEV + " | "+self.xxd_path+" -ps"
+        # return self.dd_path+" if="+self.dump_screen_path + " bs=4 count=1 skip=" + \
+        #        str(self.fight_offset)+" 2>" + settings.NULL_DEV + " | "+self.xxd_path+" -ps"
+        return self.adb_path + " -s "+self.device_id+" exec-out screencap"+" | " + \
+               self.dd_path+" bs=4 count=1 skip="+str(self.fight_offset)+" 2>" + \
+               settings.NULL_DEV + " | "+self.xxd_path+" -ps"
 
     def create_virtual_disk_linux(self):
         if not os.path.exists(settings.VIRTUAL_DISK):
@@ -200,7 +203,6 @@ class RunTicket(Position):
         run_count = 1
 
         while run_count <= ticket_num:
-            self.clear_virtual_disk_file()
             # return
             self.goto_dimension_eat()
 
@@ -289,29 +291,28 @@ class RunTicket(Position):
 
     def get_fighting_pixel_color(self):
         pixel_color = ""
-        system('echo "" > ' + self.dump_screen_path)
+        # system('echo "" > ' + self.dump_screen_path)
+        # p = subprocess.Popen(self.dump_screen_buffer_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(self.get_pixel_color_cmd(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        p = subprocess.Popen(self.dump_screen_buffer_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         try:
-            p.communicate(timeout=10)
-            # system(self.adb_path + " -s " + self.device_id + " exec-out screencap > " + settings.SCREEN_DUMP_PATH)
-            pixel_color = self.run_wait(self.get_pixel_color_cmd())
-            pixel_color = pixel_color[0:6]
-            # print(pixel_color)
+            pixel_color, err = p.communicate(timeout=10)
+            # pixel_color = self.run_wait(self.get_pixel_color_cmd())
+            pixel_color = str(pixel_color[0:6].decode('utf8'))
+            # print("color: "+pixel_color)
         except Exception as e:
-            print("adb timeout, re-get again")
-            self.dump_screen_fail_count += 1
-            if self.dump_screen_fail_count <= 1:
-                self.dump_screen_path = self.dump_screen_path + str(self.dump_screen_fail_count)
-            else:
-                self.dump_screen_path = self.dump_screen_path[0:-1] + str(self.dump_screen_fail_count)
+            print("adb timeout, re-get again, err: " + str(e))
+            # self.dump_screen_fail_count += 1
+            # if self.dump_screen_fail_count <= 1:
+            #     self.dump_screen_path = self.dump_screen_path + str(self.dump_screen_fail_count)
+            # else:
+            #     self.dump_screen_path = self.dump_screen_path[0:-1] + str(self.dump_screen_fail_count)
 
             p.terminate()
-            print("change dump path: " + self.dump_screen_path)
-            self.set_dump_screen_cmd(self.dump_screen_path)
+            # print("change dump path: " + self.dump_screen_path)
+            # self.set_dump_screen_cmd(self.dump_screen_path)
             sleep(5)
             self.get_fighting_pixel_color()
-            str(e)
 
         return pixel_color
 
