@@ -10,6 +10,7 @@ COPY_FIGHT_TOTAL_COUNT = 5
 if platform.system() == 'Windows':
     VIRTUAL_DISK = 'R:'
     VIRTUAL_CREATE_CMD = 'imdisk -a -s 64M -m '+VIRTUAL_DISK+' -o rem -p "/fs:ntfs /v:RamDisk /q /y" > nul'
+    VIRTUAL_DELETE_CMD = 'imdisk -D -m '+VIRTUAL_DISK
     NULL_DEV = 'nul'
 else:
     VIRTUAL_DISK = '/tmp/ramdisk/'

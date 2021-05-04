@@ -92,10 +92,10 @@ class RunTicket(Position):
         super(RunTicket, self).__init__()
         self.fight_type = fight_type
 
-        # self.get_pixel_color_cmd = ''
         self.dump_screen_buffer_cmd = ''
         self.role_obj = None
 
+        self.use_virtual_disk = False
         self.dump_screen_fail_count = 0
         self.dump_screen_path = settings.SCREEN_DUMP_PATH
 
@@ -117,17 +117,14 @@ class RunTicket(Position):
             self.xxd_path = 'xxd'
             self.adb_path = 'adb'
 
-        # self.get_pixel_color_cmd = \
-        #     self.dd_path+" if="+self.dump_screen_path + " bs=4 count=1 skip=" + \
-        #     str(self.fight_offset)+" 2>" + settings.NULL_DEV + " | "+self.xxd_path+" -ps"
-        # print(self.get_pixel_color_cmd)
-
         self.role_obj = obj
 
         if platform.system() == 'Windows':
-            self.create_virtual_disk_windows()
+            self.use_virtual_disk = self.create_virtual_disk_windows()
         else:
-            self.create_virtual_disk_linux()
+            self.use_virtual_disk = self.create_virtual_disk_linux()
+
+        self.clear_virtual_disk_file()
 
         self.get_device_id()
         self.set_dump_screen_cmd(self.dump_screen_path)
@@ -160,33 +157,50 @@ class RunTicket(Position):
             os.system(settings.VIRTUAL_UMOUNT_CMD)
             os.system(settings.VIRTUAL_MOUNT_CMD)
             print('create done')
+            return True
         except Exception as e:
             print("can't create virtual disk, please check " + settings.VIRTUAL_DISK +
                   "use virtual disk can protect your HDD")
             self.dump_screen_path = settings.NO_VD_SCREEN_DUMP_PATH
             str(e)
+            return False
 
     def create_virtual_disk_windows(self):
         # if len(self.get_ramdrive_by_label()) == 0:
         for drive in self.get_ramdrive_by_label():
             if drive == settings.VIRTUAL_DISK:
-                return
+                return True
         print('create virtual disk '+settings.VIRTUAL_DISK)
         try:
             os.system(settings.VIRTUAL_CREATE_CMD)
             print('create done')
+            return True
         except Exception as e:
             print("can't create virtual disk, please make sure install IMdisk, "
                   "use virtual disk can protect your HDD")
             self.dump_screen_path = settings.NO_VD_SCREEN_DUMP_PATH
             str(e)
+            return False
+
+    def clear_virtual_disk_file(self):
+        if not self.use_virtual_disk:
+            return
+
+        screen_dump_file_list = os.listdir(settings.VIRTUAL_DISK)
+        # print(screen_dump_file_list)
+        if len(screen_dump_file_list) < 1:
+            return
+
+        print("Clear all virtual disk file")
+        for screen_dump_file in screen_dump_file_list:
+            os.remove(os.path.join(settings.VIRTUAL_DISK, screen_dump_file))
 
     def run_ticket(self, ticket_type, ticket_num):
         system(self.adb_path + " wait-for-device")
         run_count = 1
 
         while run_count <= ticket_num:
-
+            self.clear_virtual_disk_file()
             # return
             self.goto_dimension_eat()
 
