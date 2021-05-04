@@ -293,13 +293,15 @@ class RunTicket(Position):
         pixel_color = ""
         # system('echo "" > ' + self.dump_screen_path)
         # p = subprocess.Popen(self.dump_screen_buffer_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        p = subprocess.Popen(self.get_pixel_color_cmd(), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(self.get_pixel_color_cmd(), shell=True, universal_newlines=True,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         try:
             pixel_color, err = p.communicate(timeout=10)
             # pixel_color = self.run_wait(self.get_pixel_color_cmd())
-            pixel_color = str(pixel_color[0:6].decode('utf8'))
+            pixel_color = str(pixel_color[0:6])
             # print("color: "+pixel_color)
+            return pixel_color
         except Exception as e:
             print("adb timeout, re-get again, err: " + str(e))
             # self.dump_screen_fail_count += 1
@@ -313,8 +315,6 @@ class RunTicket(Position):
             # self.set_dump_screen_cmd(self.dump_screen_path)
             sleep(5)
             self.get_fighting_pixel_color()
-
-        return pixel_color
 
     def goto_dimension_eat(self):
         self.touch_pos(self.map_pos)
