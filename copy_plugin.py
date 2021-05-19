@@ -199,7 +199,8 @@ class RunTicket(Position):
             os.remove(os.path.join(settings.VIRTUAL_DISK, screen_dump_file))
 
     def run_ticket(self, ticket_type, ticket_num):
-        system(self.adb_path + " wait-for-device")
+        system(self.adb_path+" -s "+self.device_id+" wait-for-device")
+        # system(self.adb_path + " wait-for-device")
         run_count = 1
 
         while run_count <= ticket_num:
@@ -290,7 +291,7 @@ class RunTicket(Position):
             return False
 
     def get_fighting_pixel_color(self):
-        pixel_color = ""
+        # pixel_color = ""
         # system('echo "" > ' + self.dump_screen_path)
         # p = subprocess.Popen(self.dump_screen_buffer_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p = subprocess.Popen(self.get_pixel_color_cmd(), shell=True, universal_newlines=True,
@@ -299,7 +300,7 @@ class RunTicket(Position):
         try:
             pixel_color, err = p.communicate(timeout=10)
             # pixel_color = self.run_wait(self.get_pixel_color_cmd())
-            pixel_color = str(pixel_color[0:6])
+            pixel_color = pixel_color[0:6]
             # print("color: "+pixel_color)
             return pixel_color
         except Exception as e:
