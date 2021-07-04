@@ -53,7 +53,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
 
         self.touch_pos(self.attack)
         if is_run_copy:
-            sleep(7)
+            sleep(6.2)
         else:
             sleep(5)
         self.touch_pos(self.any_pos)
@@ -79,7 +79,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.touch_pos(self.fight_role1_pos)
         self.touch_pos(self.fight_skill_4)  # 神速的旋律
         self.touch_pos(self.fight_role2_pos)
-        self.touch_pos(self.fight_skill_2)  # 極光之力
+        self.touch_pos(self.fight_skill_3)  # 極光之力
         self.touch_pos(self.fight_role3_pos)
         self.touch_pos(self.fight_skill_4)  # 無畏舞步
         self.touch_pos(self.fight_role4_pos)
@@ -201,7 +201,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.touch_pos(self.fight_role1_pos)
         self.touch_pos(self.fight_skill_3)  # 蝴蝶一夢
         self.touch_pos(self.fight_role2_pos)
-        self.touch_pos(self.fight_skill_2)  # 極光之力
+        self.touch_pos(self.fight_skill_3)  # 極光之力
         self.touch_pos(self.fight_role3_pos)
         self.touch_pos(self.fight_skill_3)  # 克加
         self.touch_pos(self.fight_role4_pos)

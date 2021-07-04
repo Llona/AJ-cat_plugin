@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from time import sleep
+import time
 from os import system
 import subprocess
 from abc import ABC, abstractmethod
@@ -200,11 +201,11 @@ class RunTicket(Position):
 
     def run_ticket(self, ticket_type, ticket_num):
         system(self.adb_path+" -s "+self.device_id+" wait-for-device")
-        # system(self.adb_path + " wait-for-device")
         run_count = 1
 
         while run_count <= ticket_num:
             # return
+            start_time = time.localtime()
             self.goto_dimension_eat()
 
             # into door
@@ -228,6 +229,9 @@ class RunTicket(Position):
             sleep(2)
 
             run_role_copy(self.role_obj)
+
+            end_time = time.localtime()
+            print(time.strftime("%H:%M:%S", start_time)+' - '+time.strftime("%H:%M:%S", end_time))
             print("=====Done=====")
 
             run_count += 1
