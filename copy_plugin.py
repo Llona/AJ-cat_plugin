@@ -2,6 +2,7 @@
 
 from time import sleep
 import time
+import datetime
 from os import system
 import subprocess
 from abc import ABC, abstractmethod
@@ -43,6 +44,7 @@ class Position(object):
 
         self.fight_skill_change = "1954 992"
         self.attack = "1995 936"
+        self.af = "2051 107"
 
         self.copy_menu_btn = "369 965"
         self.copy_food_btn = "1103 905"
@@ -69,6 +71,12 @@ class Position(object):
         self.area_pos = "2025 984"
         self.migunia_area_pos = "789 590"
 
+        self.eluzion_pos = "605 1013"
+        self.sebas_pos = "1735 672"
+        self.sebas_door_pos = "1215 228"
+        self.sebas_a_pos = "494 577"
+        self.sebas_a_4_pos = "622 429"
+
         self.ami_pos = "1129 571"
         self.lika_pos = "519 441"
         self.alder_pos = "2185 1043"
@@ -84,7 +92,7 @@ class Position(object):
 
         self.lmove_right = "395 619 2170 563"
         self.lmove_up = "488 819 870 190"
-        self.lmove_left = "2165 567 749 597"
+        self.lmove_left = "2197 443 749 597"
         self.lmove_down = "1391 333 1429 966"
 
 
@@ -205,7 +213,7 @@ class RunTicket(Position):
 
         while run_count <= ticket_num:
             # return
-            start_time = time.localtime()
+            start_time = datetime.datetime.now()
             self.goto_dimension_eat()
 
             # into door
@@ -230,8 +238,11 @@ class RunTicket(Position):
 
             run_role_copy(self.role_obj)
 
-            end_time = time.localtime()
-            print(time.strftime("%H:%M:%S", start_time)+' - '+time.strftime("%H:%M:%S", end_time))
+            end_time = datetime.datetime.now()
+            print(start_time.strftime("%H:%M:%S")+' - '+end_time.strftime("%H:%M:%S"))
+            count_time = (end_time - start_time).seconds
+            count_time = int(count_time)
+            print("Total time: %s" % time.strftime("%H:%M:%S", time.gmtime(count_time)))
             print("=====Done=====")
 
             run_count += 1
@@ -407,6 +418,37 @@ class RunTicket(Position):
                 ramdisk_drives.append(driver[0:2])
 
         return ramdisk_drives
+
+
+class LSebas(RunTicket):
+    def moveto_fighting_room(self):
+        self.touch_pos(self.map_pos)
+        sleep(1)
+        # self.touch_pos(self.extradimensional_pos)
+        # sleep(0.5)
+        self.touch_pos(self.future_pos)
+        sleep(0.5)
+        self.swipe("lleft", 300)
+        sleep(0.5)
+        self.swipe("ldown", 258)
+        sleep(0.5)
+        self.touch_pos(self.eluzion_pos)
+        sleep(0.3)
+        self.touch_pos(self.sebas_pos)
+        sleep(0.3)
+        self.touch_pos(self.yes_pos)
+        sleep(0.5)
+
+        self.touch_pos(self.sebas_door_pos)
+        sleep(0.3)
+        self.touch_pos(self.sebas_a_pos)
+        sleep(0.3)
+
+    def into_room_4(self):
+        self.swipe("lleft", 100)
+        self.touch_pos(self.sebas_a_4_pos)
+        sleep(0.3)
+        self.touch_pos(self.yes_to_move_pos)
 
 
 class RunRoleCopy(ABC):
