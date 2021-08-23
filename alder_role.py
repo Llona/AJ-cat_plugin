@@ -75,21 +75,8 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.boss_fighting()
 
     def boss_fighting(self):
-        # self.clear_fighting_by_yukino()
-        self.touch_pos(self.fight_role1_pos)
-        self.touch_pos(self.fight_skill_4)  # 神速的旋律
-        self.touch_pos(self.fight_role2_pos)
-        self.touch_pos(self.fight_skill_3)  # 極光之力
-        self.touch_pos(self.fight_role3_pos)
-        self.touch_pos(self.fight_skill_4)  # 無畏舞步
-        self.touch_pos(self.fight_role4_pos)
-        self.touch_pos(self.fight_skill_2)  # 飛雪千里
-
-        self.touch_pos(self.attack)
-        sleep(8)
-
-        self.touch_pos(self.any_pos)
-        sleep(8)
+        self.clear_fighting_by_yukino()
+        sleep(6)
 
         self.touch_pos(self.any_pos)
         sleep(10)
@@ -198,6 +185,22 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         print("start fear fighting")
 
     def clear_fighting_by_yukino(self):
+        self.touch_pos(self.fight_role1_pos)
+        self.touch_pos(self.fight_skill_4)  # 神速的旋律
+        self.touch_pos(self.fight_role2_pos)
+        self.touch_pos(self.fight_skill_3)  # 極光之力
+        self.touch_pos(self.fight_role3_pos)
+        self.touch_pos(self.fight_skill_4)  # 無畏舞步
+        self.touch_pos(self.fight_role4_pos)
+        self.touch_pos(self.fight_skill_2)  # 飛雪千里
+
+        self.touch_pos(self.attack)
+        sleep(8)
+
+        self.touch_pos(self.any_pos)
+        sleep(2)
+
+    def clear_fighting_by_yuking_old(self):
         self.touch_pos(self.fight_role1_pos)
         self.touch_pos(self.fight_skill_3)  # 蝴蝶一夢
         self.touch_pos(self.fight_role2_pos)
