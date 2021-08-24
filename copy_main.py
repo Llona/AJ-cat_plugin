@@ -35,8 +35,10 @@ if __name__ == '__main__':
         role_run = LittleSebasA4()
         is_copy = False
     else:
-        print('Error!! Your Role: '+sys.argv[1]+' is not support, please check it\n')
-        raise ValueError("Error!")
+        print('Error!! Your Role: '+sys.argv[1]+' is not support, Role list:')
+        for i in RoleEnum:
+            print(i.value)
+        sys.exit()
 
     if is_copy:
         role_run.start(TicketEnum.RED, get_ticket_num(TicketEnum.RED))
