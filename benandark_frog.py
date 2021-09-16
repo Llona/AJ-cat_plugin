@@ -5,14 +5,45 @@ import datetime
 from copy_plugin import LSebas
 
 
-class LittleSebasA4(LSebas):
+class BenandarkFrog(LSebas):
     def __init__(self):
-        super(LittleSebasA4, self).__init__()
+        super(BenandarkFrog, self).__init__()
         article_obj = self
         self.setup(article_obj)
+        self.screen_high = 2280
+        self.screen_wight = 1080
+
+        self.fight_x = 614
+        self.fight_y = 833
+        self.fight_offset = self.screen_high*self.fight_y+self.fight_x
+
+        self.fight_role1_pos = "398 1000"
+        self.fight_role2_pos = "646 995"
+        self.fight_role3_pos = "892 988"
+        self.fight_role4_pos = "1135 989"
+        self.fight_role5_pos = "1442 988"
+        self.fight_role6_pos = "1696 995"
+
+        self.fight_skill_1 = "450 819"
+        self.fight_skill_2 = "830 822"
+        self.fight_skill_3 = "1194 822"
+        self.fight_skill_4 = "1556 819"
+
+        self.fight_skill_change = "1954 992"
+        self.attack = "1995 936"
+        self.af = "2051 107"
+
+        self.sebas_a_4_pos = "622 429"
+        self.yes_to_move_pos = "1393 965"
+
+        self.lmove_left = "2197 443 749 597"
+
+        self.any_pos = "924 668"
 
     def start(self):
-        self.moveto_fighting_room()
+        # self.moveto_fighting_room()
+        print('into benandark')
+        return
 
         count = 1
         while True:

@@ -27,6 +27,7 @@ class RoleEnum(enum.Enum):
     LIKA = 'lika'
     ALDER = 'alder'
     LSebas_A4 = 'lsa4'
+    Benandark = 'benandark'
 
 
 class TicketEnum(enum.Enum):

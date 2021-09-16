@@ -12,9 +12,9 @@ import settings
 from settings import TicketEnum
 import platform
 
-if platform.system() == "Windows":
-    import win32api
-    import win32file
+# if platform.system() == "Windows":
+#     import win32api
+#     import win32file
 
 
 class Position(object):
@@ -116,7 +116,7 @@ class RunTicket(Position):
 
         # self.setup()
 
-    def setup(self, obj):
+    def setup(self, obj=None):
         if platform.system() == "Windows":
             self.dd_path = os.path.join(sys.path[0], 'dd.exe')
             self.xxd_path = os.path.join(sys.path[0], 'xxd.exe')
@@ -176,36 +176,6 @@ class RunTicket(Position):
             self.dump_screen_path = settings.NO_VD_SCREEN_DUMP_PATH
             str(e)
             return False
-
-    def create_virtual_disk_windows(self):
-        # if len(self.get_ramdrive_by_label()) == 0:
-        for drive in self.get_ramdrive_by_label():
-            if drive == settings.VIRTUAL_DISK:
-                return True
-        print('create virtual disk '+settings.VIRTUAL_DISK)
-        try:
-            os.system(settings.VIRTUAL_CREATE_CMD)
-            print('create done')
-            return True
-        except Exception as e:
-            print("can't create virtual disk, please make sure install IMdisk, "
-                  "use virtual disk can protect your HDD")
-            self.dump_screen_path = settings.NO_VD_SCREEN_DUMP_PATH
-            str(e)
-            return False
-
-    def clear_virtual_disk_file(self):
-        if not self.use_virtual_disk:
-            return
-
-        screen_dump_file_list = os.listdir(settings.VIRTUAL_DISK)
-        # print(screen_dump_file_list)
-        if len(screen_dump_file_list) < 1:
-            return
-
-        print("Clear all virtual disk file")
-        for screen_dump_file in screen_dump_file_list:
-            os.remove(os.path.join(settings.VIRTUAL_DISK, screen_dump_file))
 
     def run_ticket(self, ticket_type, ticket_num):
         system(self.adb_path+" -s "+self.device_id+" wait-for-device")
@@ -408,16 +378,46 @@ class RunTicket(Position):
         r.close()
         return text
 
-    @staticmethod
-    def get_ramdrive_by_label():
-        ramdisk_drives = []
-        driver_list_str = win32api.GetLogicalDriveStrings()
-        for driver in driver_list_str.split('\x00'):
-            # 2 is removable driver, im ramdisk is 2
-            if win32file.GetDriveType(driver) == 2 and win32api.GetVolumeInformation(driver+'\\')[0] == 'RamDisk':
-                ramdisk_drives.append(driver[0:2])
-
-        return ramdisk_drives
+    # @staticmethod
+    # def get_ramdrive_by_label():
+    #     ramdisk_drives = []
+    #     driver_list_str = win32api.GetLogicalDriveStrings()
+    #     for driver in driver_list_str.split('\x00'):
+    #         # 2 is removable driver, im ramdisk is 2
+    #         if win32file.GetDriveType(driver) == 2 and win32api.GetVolumeInformation(driver+'\\')[0] == 'RamDisk':
+    #             ramdisk_drives.append(driver[0:2])
+    #
+    #     return ramdisk_drives
+    #
+    # def create_virtual_disk_windows(self):
+    #     # if len(self.get_ramdrive_by_label()) == 0:
+    #     for drive in self.get_ramdrive_by_label():
+    #         if drive == settings.VIRTUAL_DISK:
+    #             return True
+    #     print('create virtual disk '+settings.VIRTUAL_DISK)
+    #     try:
+    #         os.system(settings.VIRTUAL_CREATE_CMD)
+    #         print('create done')
+    #         return True
+    #     except Exception as e:
+    #         print("can't create virtual disk, please make sure install IMdisk, "
+    #               "use virtual disk can protect your HDD")
+    #         self.dump_screen_path = settings.NO_VD_SCREEN_DUMP_PATH
+    #         str(e)
+    #         return False
+    #
+    # def clear_virtual_disk_file(self):
+    #     if not self.use_virtual_disk:
+    #         return
+    #
+    #     screen_dump_file_list = os.listdir(settings.VIRTUAL_DISK)
+    #     # print(screen_dump_file_list)
+    #     if len(screen_dump_file_list) < 1:
+    #         return
+    #
+    #     print("Clear all virtual disk file")
+    #     for screen_dump_file in screen_dump_file_list:
+    #         os.remove(os.path.join(settings.VIRTUAL_DISK, screen_dump_file))
 
 
 class LSebas(RunTicket):

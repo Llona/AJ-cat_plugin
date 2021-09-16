@@ -3,6 +3,7 @@ from ami_role import AmiRoleCopy
 from lika_role import LikaRoleCopy
 from alder_role import AlderRoleCopy
 from lsebas_a4 import LittleSebasA4
+from benandark_frog import BenandarkFrog
 from settings import TicketEnum
 import sys
 
@@ -33,6 +34,9 @@ if __name__ == '__main__':
         role_run = AlderRoleCopy()
     elif sys.argv[1] == RoleEnum.LSebas_A4.value:
         role_run = LittleSebasA4()
+        is_copy = False
+    elif sys.argv[1] == RoleEnum.Benandark.value:
+        role_run = BenandarkFrog()
         is_copy = False
     else:
         print('Error!! Your Role: '+sys.argv[1]+' is not support, Role list:')
