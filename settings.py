@@ -5,6 +5,8 @@ import platform
 
 DEVICE_ID = 'RF8N32YBMGG'
 FIGHTING_COLOR = "528cca"
+# DEVICE_ID = '2785a241e41c7ece'
+# FIGHTING_COLOR = "3c5e85"
 COPY_FIGHT_TOTAL_COUNT = 5
 
 if platform.system() == 'Windows':
