@@ -151,6 +151,6 @@ class BenandarkFrog(LSebas):
         # for i in range(0, 8):
         #     self.touch_pos(self.fight_skill_2)
         self.touch_pos(self.attack)
-        sleep(6)
+        sleep(7)
         self.touch_pos(self.any_pos)
         sleep(8)

@@ -450,6 +450,7 @@ class LSebas(RunTicket):
 
     def into_room_4(self):
         self.swipe("lleft", 100)
+        sleep(0.5)
         self.touch_pos(self.sebas_a_4_pos)
         sleep(0.3)
         self.touch_pos(self.yes_to_move_pos)
