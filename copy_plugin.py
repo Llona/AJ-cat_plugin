@@ -101,6 +101,9 @@ class RunTicket(Position):
         super(RunTicket, self).__init__()
         self.fight_type = fight_type
 
+        self.run_count = 0
+        self.floor_fight_count = 0
+
         # self.dump_screen_buffer_cmd = ''
         self.role_obj = None
 
@@ -179,9 +182,9 @@ class RunTicket(Position):
 
     def run_ticket(self, ticket_type, ticket_num):
         system(self.adb_path+" -s "+self.device_id+" wait-for-device")
-        run_count = 1
+        self.run_count = 1
 
-        while run_count <= ticket_num:
+        while self.run_count <= ticket_num:
             # return
             start_time = datetime.datetime.now()
             self.goto_dimension_eat()
@@ -196,10 +199,10 @@ class RunTicket(Position):
             # break
 
             if ticket_type == TicketEnum.RED:
-                print("red ticket, count:" + str(run_count))
+                print("red ticket, count:" + str(self.run_count))
                 self.touch_pos(self.red_ticket_pos)
             else:
-                print("green ticket, count:" + str(run_count))
+                print("green ticket, count:" + str(self.run_count))
                 self.touch_pos(self.green_ticket_pos)
 
             sleep(0.5)
@@ -215,19 +218,19 @@ class RunTicket(Position):
             print("Total time: %s" % time.strftime("%H:%M:%S", time.gmtime(count_time)))
             print("=====Done=====")
 
-            run_count += 1
+            self.run_count += 1
 
     def clear_all_fight(self, door_direction, fight_total_count=settings.COPY_FIGHT_TOTAL_COUNT):
         current_direction = door_direction
         go_run_fight = False
-        count = 0
+        self.floor_fight_count = 0
 
         if fight_total_count == 0:
             is_run_copy = False
         else:
             is_run_copy = True
 
-        if fight_total_count == 0 or count < fight_total_count:
+        if fight_total_count == 0 or self.floor_fight_count < fight_total_count:
             go_run_fight = True
 
         while go_run_fight:
@@ -241,12 +244,12 @@ class RunTicket(Position):
             if self.is_fighting_state():
                 print("is in fight state")
                 self.clear_fighting(is_run_copy)
-                count += 1
-                print("fight count:" + str(count))
+                self.floor_fight_count += 1
+                print("fight count:" + str(self.floor_fight_count))
             else:
                 continue
 
-            if fight_total_count != 0 and count >= fight_total_count:
+            if fight_total_count != 0 and self.floor_fight_count >= fight_total_count:
                 go_run_fight = False
 
     def clear_fighting(self, is_run_copy=True):
@@ -266,7 +269,7 @@ class RunTicket(Position):
         sleep(0.3)
 
     def is_fighting_state(self):
-        self.touch_pos(self.fight_role4_pos)
+        self.touch_pos(self.fight_role3_pos)
         sleep(0.2)
         pixel_color = self.get_fighting_pixel_color()
 
@@ -313,7 +316,7 @@ class RunTicket(Position):
         sleep(0.3)
         self.touch_pos(self.yes_pos)
         sleep(2)
-        self.eat_tree_food()
+        # self.eat_tree_food()
 
     def eat_tree_food(self):
         self.touch_pos(self.food_pos)
@@ -439,9 +442,9 @@ class LSebas(RunTicket):
         self.touch_pos(self.eluzion_pos)
         sleep(0.3)
         self.touch_pos(self.sebas_pos)
-        sleep(0.3)
+        sleep(0.6)
         self.touch_pos(self.yes_pos)
-        sleep(0.5)
+        sleep(1.5)
 
         self.touch_pos(self.sebas_door_pos)
         sleep(0.3)

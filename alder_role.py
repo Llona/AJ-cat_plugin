@@ -17,10 +17,32 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.treasure_chest33_pos = "942 375"
         self.treasure_chest41_pos = "1384 386"
 
+        self.any_pos = "1835 386"
+
+        self.floor_num = 0
+
         self.setup(article_obj)
 
     def start(self, ticket_type, ticket_num):
         self.run_ticket(ticket_type, ticket_num)
+
+    def eat_tree_food(self):
+        if self.run_count == 1:
+            self.touch_pos(self.food_pos)
+            sleep(0.5)
+            self.touch_pos(self.any_pos)
+            sleep(1)
+            self.touch_pos(self.yes_pos)
+            sleep(2)
+            self.touch_pos(self.any_pos)
+            sleep(1)
+            self.touch_pos(self.any_pos)
+            sleep(0.5)
+            self.touch_pos(self.any_pos)
+            sleep(0.5)
+        else:
+            # no need to eat
+            return
 
     def moveto_copy_map(self):
         self.touch_pos(self.future_pos)
@@ -41,21 +63,62 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.touch_pos(self.alder_pos)
         sleep(0.5)
 
-    def clear_fighting(self, is_run_copy=True):
-        # change role to add mp
-        self.touch_pos(self.fight_role2_pos)
-        self.touch_pos(self.fight_skill_change)
-        self.touch_pos(self.fight_role5_pos)
-
-        # role 1 use first skill can finish fighting
+    def set_default_skills(self):
+        # 會長 無何有之鄉
         self.touch_pos(self.fight_role1_pos)
         self.touch_pos(self.fight_skill_2)
 
+        # 普攻
+        self.touch_pos(self.fight_role2_pos)
+        self.touch_pos(self.fight_skill_1)
+        self.touch_pos(self.fight_role3_pos)
+        self.touch_pos(self.fight_skill_1)
+        self.touch_pos(self.fight_role4_pos)
+        self.touch_pos(self.fight_skill_1)
+
+    def set_alder_fight_skills(self):
+        # 阿爾德 交叉斬改
+        self.touch_pos(self.fight_role4_pos)
+        self.touch_pos(self.fight_skill_2)
+        # 普攻
+        self.touch_pos(self.fight_role1_pos)
+        self.touch_pos(self.fight_skill_1)
+        self.touch_pos(self.fight_role2_pos)
+        self.touch_pos(self.fight_skill_1)
+        self.touch_pos(self.fight_role3_pos)
+        self.touch_pos(self.fight_skill_1)
+
+    def clear_fighting(self, is_run_copy=True):
+        # change role to add mp
+        # if self.floor_num == 2:
+        #     # self.touch_pos(self.fight_role2_pos)
+        #     # self.touch_pos(self.fight_skill_change)
+        #     # self.touch_pos(self.fight_role5_pos)
+        # else:
+        self.touch_pos(self.fight_skill_1)
+        if self.floor_num == 3:
+            pass
+            # sleep(0.2)
+
+        if (self.floor_num == 1 or self.floor_num == 3) and self.floor_fight_count == 0:
+            print("set default skills")
+            self.set_default_skills()
+
+        if self.floor_num == 2 and self.floor_fight_count == 0:
+            print("set alder skills")
+            self.set_alder_fight_skills()
+
+        # # role 1 use first skill can finish fighting
+        # self.touch_pos(self.fight_role1_pos)
+        # self.touch_pos(self.fight_skill_2)
+
         self.touch_pos(self.attack)
-        if is_run_copy:
-            sleep(6.2)
+
+        if self.floor_num == 2:
+            sleep(5.5)
         else:
             sleep(5)
+
         self.touch_pos(self.any_pos)
         sleep(0.5)
 
@@ -88,6 +151,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         sleep(2)
 
     def run_floor4(self):
+        self.floor_num = 4
         self.swipe("left", 1600)
         self.touch_pos(self.treasure_chest41_pos)
         sleep(0.5)
@@ -95,8 +159,8 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         sleep(0.2)
 
         # change 雪乃 for boss fighting
-        self.change_member_4_and_5()
-        self.eat_food_in_copy()
+        # self.change_member_4_and_5()
+        # self.eat_food_in_copy()
 
         # go to boss room
         self.swipe("left", 4000)
@@ -104,6 +168,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         sleep(4)
 
     def run_floor3(self):
+        self.floor_num = 3
         self.clear_all_fight("right")
         self.get_treasure_chest_31()
         self.get_treasure_chest_32()
@@ -155,6 +220,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         sleep(3)
 
     def run_floor2(self):
+        self.floor_num = 2
         self.clear_all_fight("left")
         self.clear_fear_2()
         self.get_treasure_chest_21()
@@ -164,13 +230,13 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.clear_fighting_by_yukino()
         sleep(2)
         # change 雪乃 to back for add mp in normal fighting
-        self.change_member_4_and_5()
+        # self.change_member_4_and_5()
 
     def goto_fighting_fear_2(self):
         self.swipe("right", 5000)
 
         # change 雪乃 for fear fighting
-        self.change_member_4_and_5()
+        # self.change_member_4_and_5()
 
         self.swipe("left", 1600)
         self.swipe("up")
@@ -188,39 +254,11 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.touch_pos(self.fight_role1_pos)
         self.touch_pos(self.fight_skill_4)  # 神速的旋律
         self.touch_pos(self.fight_role2_pos)
-        self.touch_pos(self.fight_skill_3)  # 極光之力
-        self.touch_pos(self.fight_role3_pos)
-        self.touch_pos(self.fight_skill_4)  # 無畏舞步
-        self.touch_pos(self.fight_role4_pos)
         self.touch_pos(self.fight_skill_2)  # 飛雪千里
-
-        self.touch_pos(self.attack)
-        sleep(8)
-
-        self.touch_pos(self.any_pos)
-        sleep(2)
-
-    def clear_fighting_by_yuking_old(self):
-        self.touch_pos(self.fight_role1_pos)
-        self.touch_pos(self.fight_skill_3)  # 蝴蝶一夢
-        self.touch_pos(self.fight_role2_pos)
-        self.touch_pos(self.fight_skill_3)  # 極光之力
         self.touch_pos(self.fight_role3_pos)
-        self.touch_pos(self.fight_skill_3)  # 克加
+        self.touch_pos(self.fight_skill_4)  # 貓神的守護
         self.touch_pos(self.fight_role4_pos)
-        self.touch_pos(self.fight_skill_3)  # 流星
-
-        self.touch_pos(self.attack)
-        sleep(9)
-
-        self.touch_pos(self.fight_role1_pos)
-        self.touch_pos(self.fight_skill_4)  # 神速的旋律
-        self.touch_pos(self.fight_role2_pos)
-        self.touch_pos(self.fight_skill_4)  # 純潔的搖籃
-        self.touch_pos(self.fight_role3_pos)
-        self.touch_pos(self.fight_skill_4)  # 無畏舞步
-        self.touch_pos(self.fight_role4_pos)
-        self.touch_pos(self.fight_skill_2)  # 飛雪千里
+        self.touch_pos(self.fight_skill_1)  # 交叉斬改
 
         self.touch_pos(self.attack)
         sleep(8)
@@ -253,8 +291,9 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         sleep(3)
 
     def run_floor1(self):
+        self.floor_num = 1
         sleep(3)
-        self.change_member_4_and_5()
+        # self.change_member_4_and_5()
         self.clear_all_fight("right")
         self.get_treasure_chest_11()
         self.get_treasure_chest_12()
