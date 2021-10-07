@@ -100,11 +100,11 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
             pass
             # sleep(0.2)
 
-        if (self.floor_num == 1 or self.floor_num == 3) and self.floor_fight_count == 0:
+        if self.floor_num == 1 and self.floor_fight_count == 0:
             print("set default skills")
             self.set_default_skills()
 
-        if self.floor_num == 2 and self.floor_fight_count == 0:
+        if self.floor_num == 3 and self.floor_fight_count == 0:
             print("set alder skills")
             self.set_alder_fight_skills()
 
@@ -114,10 +114,10 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
 
         self.touch_pos(self.attack)
 
-        if self.floor_num == 2:
-            sleep(5.5)
+        if self.floor_num == 3:
+            sleep(4.2)
         else:
-            sleep(5)
+            sleep(4.5)
 
         self.touch_pos(self.any_pos)
         sleep(0.5)
@@ -228,7 +228,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
     def clear_fear_2(self):
         self.goto_fighting_fear_2()
         self.clear_fighting_by_yukino()
-        sleep(2)
+        sleep(0.3)
         # change 雪乃 to back for add mp in normal fighting
         # self.change_member_4_and_5()
 
@@ -258,10 +258,10 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.touch_pos(self.fight_role3_pos)
         self.touch_pos(self.fight_skill_4)  # 貓神的守護
         self.touch_pos(self.fight_role4_pos)
-        self.touch_pos(self.fight_skill_1)  # 交叉斬改
+        self.touch_pos(self.fight_skill_2)  # 交叉斬改
 
         self.touch_pos(self.attack)
-        sleep(8)
+        sleep(6)
 
         self.touch_pos(self.any_pos)
         sleep(2)
@@ -292,7 +292,7 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
 
     def run_floor1(self):
         self.floor_num = 1
-        sleep(3)
+        sleep(2)
         # self.change_member_4_and_5()
         self.clear_all_fight("right")
         self.get_treasure_chest_11()
