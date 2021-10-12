@@ -269,7 +269,7 @@ class RunTicket(Position):
         sleep(0.3)
 
     def is_fighting_state(self):
-        self.touch_pos(self.fight_role3_pos)
+        self.touch_pos(self.fight_role4_pos)
         sleep(0.2)
         pixel_color = self.get_fighting_pixel_color()
 

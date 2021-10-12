@@ -76,16 +76,16 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.touch_pos(self.fight_role4_pos)
         self.touch_pos(self.fight_skill_1)
 
-    def set_alder_fight_skills(self):
-        # 阿爾德 交叉斬改
-        self.touch_pos(self.fight_role4_pos)
-        self.touch_pos(self.fight_skill_2)
+    def set_special_fight_skills(self):
+        # 喵可可 化妖 貓鉤一閃
+        self.touch_pos(self.fight_role3_pos)
+        self.touch_pos(self.fight_skill_3)
         # 普攻
         self.touch_pos(self.fight_role1_pos)
         self.touch_pos(self.fight_skill_1)
         self.touch_pos(self.fight_role2_pos)
         self.touch_pos(self.fight_skill_1)
-        self.touch_pos(self.fight_role3_pos)
+        self.touch_pos(self.fight_role4_pos)
         self.touch_pos(self.fight_skill_1)
 
     def clear_fighting(self, is_run_copy=True):
@@ -106,18 +106,14 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
 
         if self.floor_num == 3 and self.floor_fight_count == 0:
             print("set alder skills")
-            self.set_alder_fight_skills()
-
-        # # role 1 use first skill can finish fighting
-        # self.touch_pos(self.fight_role1_pos)
-        # self.touch_pos(self.fight_skill_2)
+            self.set_special_fight_skills()
 
         self.touch_pos(self.attack)
 
         if self.floor_num == 3:
-            sleep(4.2)
+            sleep(3.8)
         else:
-            sleep(4.5)
+            sleep(4.3)
 
         self.touch_pos(self.any_pos)
         sleep(0.5)
