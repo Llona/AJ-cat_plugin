@@ -38,14 +38,14 @@ class LittleSebasA4(LSebas):
 
     def fight_1(self):
         print("start fight 1")
-        self.touch_pos(self.fight_role1_pos)
-        self.touch_pos(self.fight_skill_3)
-        self.touch_pos(self.fight_role2_pos)
-        self.touch_pos(self.fight_skill_2)
-        self.touch_pos(self.fight_role3_pos)
-        self.touch_pos(self.fight_skill_3)
-        self.touch_pos(self.fight_role4_pos)
-        self.touch_pos(self.fight_skill_2)
+        # self.touch_pos(self.fight_role1_pos)
+        # self.touch_pos(self.fight_skill_3)
+        # self.touch_pos(self.fight_role2_pos)
+        # self.touch_pos(self.fight_skill_2)
+        # self.touch_pos(self.fight_role3_pos)
+        # self.touch_pos(self.fight_skill_2)
+        # self.touch_pos(self.fight_role4_pos)
+        # self.touch_pos(self.fight_skill_3)
         self.touch_pos(self.attack)
         sleep(13)
         self.fight_2()
@@ -53,12 +53,17 @@ class LittleSebasA4(LSebas):
     def fight_2(self):
         print("start fight 2")
         self.touch_pos(self.attack)
-        sleep(9)
-        self.touch_pos(self.attack)
         sleep(14)
         self.fight_3()
 
     def fight_3(self):
+        print("start fight 3")
+        self.touch_pos(self.attack)
+        sleep(6)
+        self.touch_pos(self.any_pos)
+        sleep(8)
+
+    def fight_3_af(self):
         print("start fight 3")
         self.touch_pos(self.af)
         sleep(0.3)
