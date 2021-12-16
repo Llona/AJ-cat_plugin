@@ -14,6 +14,8 @@ class LikaRoleCopy(RunTicket, RunRoleCopy):
         self.run_ticket(ticket_type, ticket_num)
 
     def moveto_copy_map(self):
+        # todo: should add touch door function in here
+
         self.touch_pos(self.future_pos)
 
         sleep(0.5)

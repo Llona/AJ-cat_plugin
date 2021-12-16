@@ -17,6 +17,8 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
         self.treasure_chest33_pos = "942 375"
         self.treasure_chest41_pos = "1384 386"
 
+        self.alder_after_second_pos = "1215 541"
+
         self.any_pos = "1835 386"
 
         self.floor_num = 0
@@ -25,6 +27,21 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
 
     def start(self, ticket_type, ticket_num):
         self.run_ticket(ticket_type, ticket_num)
+
+    def goto_dimension(self):
+        if self.run_count == 1:
+            self.touch_pos(self.map_pos)
+            sleep(1)
+            self.touch_pos(self.future_pos)
+            sleep(0.5)
+            self.touch_pos(self.extradimensional_pos)
+            sleep(0.5)
+            self.touch_pos(self.dimension_pos)
+            sleep(0.3)
+            self.touch_pos(self.yes_pos)
+            sleep(2)
+        else:
+            return
 
     def eat_tree_food(self):
         if self.run_count == 1:
@@ -45,22 +62,33 @@ class AlderRoleCopy(RunTicket, RunRoleCopy):
             return
 
     def moveto_copy_map(self):
-        self.touch_pos(self.future_pos)
-        sleep(0.5)
-        self.touch_pos(self.modern_pos)
-        sleep(0.5)
-        self.touch_pos(self.area_pos)
-        sleep(0.5)
-        self.touch_pos(self.migunia_area_pos)
-        sleep(0.5)
-        self.swipe("lright", 300)
-        self.swipe("lright", 300)
-        self.swipe("ldown", 258)
-        self.swipe("lright", 300)
-        self.swipe("ldown", 258)
-        # self.swipe("lright", 300)
-        sleep(0.3)
-        self.touch_pos(self.alder_pos)
+        # into door
+        if self.run_count == 1:
+            self.swipe("left", 500)
+            self.touch_pos(self.door_pos)
+            sleep(1)
+
+            self.touch_pos(self.future_pos)
+            sleep(0.5)
+            self.touch_pos(self.modern_pos)
+            sleep(0.5)
+            self.touch_pos(self.area_pos)
+            sleep(0.5)
+            self.touch_pos(self.migunia_area_pos)
+            sleep(0.5)
+            self.swipe("lright", 300)
+            self.swipe("lright", 300)
+            self.swipe("ldown", 258)
+            self.swipe("lright", 300)
+            self.swipe("ldown", 258)
+            # self.swipe("lright", 300)
+            sleep(0.3)
+            self.touch_pos(self.alder_pos)
+        else:
+            self.touch_pos(self.door_after_second_pos)
+            sleep(1)
+
+            self.touch_pos(self.alder_after_second_pos)
         sleep(0.5)
 
     def set_default_skills(self):

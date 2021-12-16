@@ -65,6 +65,7 @@ class Position(object):
         self.yes_pos = "1425 641"
         self.food_pos = "896 120"
         self.door_pos = "928 254"
+        self.door_after_second_pos = "1195 240"
 
         self.future_pos = "722 185"
         self.modern_pos = "540 201"
@@ -187,12 +188,8 @@ class RunTicket(Position):
         while self.run_count <= ticket_num:
             # return
             start_time = datetime.datetime.now()
-            self.goto_dimension_eat()
-
-            # into door
-            self.swipe("left", 500)
-            self.touch_pos(self.door_pos)
-            sleep(1)
+            self.goto_dimension()
+            self.eat_tree_food()
 
             # move map to copy
             moveto_copy_map(self.role_obj)
@@ -305,7 +302,7 @@ class RunTicket(Position):
             sleep(5)
             self.get_fighting_pixel_color()
 
-    def goto_dimension_eat(self):
+    def goto_dimension(self):
         self.touch_pos(self.map_pos)
         sleep(1)
         self.touch_pos(self.future_pos)
