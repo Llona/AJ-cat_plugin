@@ -101,7 +101,7 @@ class MoonRoleCopy(RunTicket, RunRoleCopy):
         self.touch_pos(self.fight_skill_1)
 
     def clear_fighting(self, is_run_copy=True):
-        # self.touch_pos(self.fight_skill_1)
+        self.touch_pos(self.fight_skill_1)
 
         if self.floor_num == 1 and self.floor_fight_count == 0:
             print("set default skills")
