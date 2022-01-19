@@ -29,6 +29,7 @@ class RoleEnum(enum.Enum):
     AMI = 'ami'
     LIKA = 'lika'
     ALDER = 'alder'
+    MOON = 'moon'
     LSebas_A4 = 'lsa4'
     Benandark = 'benandark'
 

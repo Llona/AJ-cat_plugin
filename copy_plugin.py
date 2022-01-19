@@ -81,6 +81,7 @@ class Position(object):
         self.ami_pos = "1129 571"
         self.lika_pos = "519 441"
         self.alder_pos = "2185 1043"
+        self.moon_pos = "1505 692"
 
         self.red_ticket_pos = "1779 533"
         self.green_ticket_pos = "1795 378"
